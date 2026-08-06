@@ -6,6 +6,8 @@
 <title>HIT FOR HIT — Event Command Center</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css">
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js"></script>
 <style>
   :root{
     --stage-black:#0E0C10;
@@ -257,8 +259,8 @@
     <h1 class="title">Hit For Hit</h1>
     <p class="subtitle">Battle Day Operations — <b>6 artists · 3 battles</b> · run this from any phone, backstage or at the door.</p>
 
-    <button onclick="startDemo()" class="demo-btn">
-Start Team Demo
+   <button onclick="startCommandTour()" class="demo-btn">
+🎬 Staff Tour
 </button>
     
     <div class="round-clock">
@@ -296,9 +298,10 @@ Start Team Demo
     </div>
   </div>
 
-  <div class="alerts" id="alerts"></div>
+ <div class="alerts" id="alerts" >
+</div>
 
-  <div class="tabs">
+<div class="tabs" id="mainTabs">
     <button class="tab-btn active" data-view="checklist">✅ Checklists</button>
     <button class="tab-btn" data-view="timeline">🕐 Timeline</button>
     <button class="tab-btn" data-view="battle">🥊 Battle Schedule</button>
@@ -306,17 +309,17 @@ Start Team Demo
     <button class="tab-btn" data-view="ideas">💡 Next-Level Ideas</button>
   </div>
 
-  <div class="view active" id="view-checklist"></div>
+ <div class="view active" id="checklist">
 
-  <div class="view" id="view-timeline">
+ <div class="view" id="timeline">
     <div class="section"><div class="section-body" id="tlBody" style="padding:8px 12px;"></div></div>
   </div>
 
-  <div class="view" id="view-battle">
+<div class="view" id="battleSchedule">
     <div class="section"><div class="section-body" id="battleBody" style="padding:8px 12px;"></div></div>
   </div>
 
-  <div class="view" id="view-staff">
+  <div class="view" id="staff">
     <div class="section"><div class="staff-grid" id="staffBody"></div></div>
   </div>
 
@@ -798,159 +801,98 @@ async function init(){
 }
 init();
 </script>
-  <div id="demoOverlay" class="demo-overlay">
-  <div class="demo-box">
+  <script>
 
-    <button onclick="closeDemo()" class="close-demo">✕</button>
+function startCommandTour(){
 
-    <h2 id="demoTitle"></h2>
-
-    <p id="demoText"></p>
-
-    <button onclick="nextDemo()" class="next-demo">
-      Next →
-    </button>
-
-  </div>
-</div>
+const driver = window.driver.js.driver;
 
 
-<style>
+const tour = driver({
 
-.demo-overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.85);
-  z-index:9999;
-  align-items:center;
-  justify-content:center;
-}
+showProgress:true,
 
-.demo-box{
-  background:#111;
-  color:white;
-  max-width:420px;
-  padding:30px;
-  border-radius:18px;
-  text-align:center;
-  border:1px solid #333;
-}
+allowClose:true,
 
-.demo-box h2{
-  margin-bottom:15px;
-}
+steps:[
 
-.demo-box p{
-  line-height:1.5;
-}
-
-.next-demo,
-.close-demo{
-  margin-top:20px;
-  padding:12px 20px;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-.close-demo{
-  float:right;
-}
-
-</style>
- <script>
-
-const demoSteps = [
 
 {
-title:"Welcome to HIT FOR HIT Command Center",
-text:"This is mission control for the event. Everything from artists, staff, schedule, streaming, and checklists lives here."
+element:"#mainTabs",
+popover:{
+title:"Navigation",
+description:"Use these tabs to move between Checklists, Timeline, Battles, Staff, and Future Ideas.",
+side:"bottom"
+}
 },
 
-{
-title:"Dashboard",
-text:"This is your home base. Check event status, alerts, and anything that needs immediate attention."
-},
 
 {
-title:"Artist Check-In",
-text:"When an artist arrives, confirm their agreement, wristband, performance order, and readiness."
-},
-
-{
-title:"Event Timeline",
-text:"Follow the schedule. Battles, intermissions, and announcements should stay on time."
-},
-
-{
-title:"Live Production",
-text:"Before doors open, verify cameras, audio, livestream, and internet connection."
-},
-
-{
-title:"Checklist",
-text:"Complete tasks and check them off. Everyone stays updated in real time."
-},
-
-{
-title:"Voting",
-text:"Monitor votes and confirm results before announcing winners."
-},
-
-{
-title:"End of Night",
-text:"Save content, collect paperwork, pack equipment, and prepare notes for the next battle."
+element:"#alerts",
+popover:{
+title:"AI Event Alerts",
+description:"This area warns the team about unfinished tasks and upcoming deadlines.",
+side:"bottom"
 }
-
-];
-
-let demoIndex=0;
+},
 
 
-function startDemo(){
-
-demoIndex=0;
-
-document.getElementById("demoOverlay").style.display="flex";
-
-showDemo();
-
+{
+element:"#checklist",
+popover:{
+title:"Event Checklist",
+description:"This is where staff completes tasks. Check items off as they are finished.",
+side:"right"
 }
+},
 
 
-function showDemo(){
-
-let step=demoSteps[demoIndex];
-
-document.getElementById("demoTitle").innerHTML=step.title;
-
-document.getElementById("demoText").innerHTML=step.text;
-
+{
+element:"#timeline",
+popover:{
+title:"Timeline",
+description:"Follow the event schedule here. This keeps doors, battles, and intermissions on time.",
+side:"right"
 }
+},
 
 
-function nextDemo(){
-
-demoIndex++;
-
-if(demoIndex >= demoSteps.length){
-
-closeDemo();
-
-alert("Demo complete. Welcome to HIT FOR HIT Command Center!");
-
-return;
-
+{
+element:"#battleSchedule",
+popover:{
+title:"Battle Schedule",
+description:"This controls the order of battles and show flow.",
+side:"left"
 }
+},
 
-showDemo();
 
+{
+element:"#staff",
+popover:{
+title:"Staff Assignments",
+description:"Everyone knows their role and responsibility here.",
+side:"left"
+}
+},
+
+
+{
+element:"#view-ideas",
+popover:{
+title:"Next Event Planning",
+description:"Use this area for upgrades like merchandise, sponsors, VIP, and improvements.",
+side:"top"
+}
 }
 
 
-function closeDemo(){
+]
 
-document.getElementById("demoOverlay").style.display="none";
+});
+
+
+tour.drive();
 
 }
 
