@@ -231,6 +231,19 @@
     .section.collapsed .section-body{display:block !important;}
     h1.title{-webkit-text-fill-color:#000;background:none;color:#000;}
   }
+  .demo-btn{
+  background:#111;
+  color:white;
+  border:2px solid #444;
+  padding:14px 22px;
+  border-radius:10px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.demo-btn:hover{
+  background:#222;
+}
 </style>
 </head>
 <body>
@@ -244,6 +257,10 @@
     <h1 class="title">Hit For Hit</h1>
     <p class="subtitle">Battle Day Operations — <b>6 artists · 3 battles</b> · run this from any phone, backstage or at the door.</p>
 
+    <button onclick="startDemo()" class="demo-btn">
+Start Team Demo
+</button>
+    
     <div class="round-clock">
       <div class="round-info">
         <div class="round-label">Current Round</div>
@@ -781,5 +798,162 @@ async function init(){
 }
 init();
 </script>
+  <div id="demoOverlay" class="demo-overlay">
+  <div class="demo-box">
+
+    <button onclick="closeDemo()" class="close-demo">✕</button>
+
+    <h2 id="demoTitle"></h2>
+
+    <p id="demoText"></p>
+
+    <button onclick="nextDemo()" class="next-demo">
+      Next →
+    </button>
+
+  </div>
+</div>
+
+
+<style>
+
+.demo-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+}
+
+.demo-box{
+  background:#111;
+  color:white;
+  max-width:420px;
+  padding:30px;
+  border-radius:18px;
+  text-align:center;
+  border:1px solid #333;
+}
+
+.demo-box h2{
+  margin-bottom:15px;
+}
+
+.demo-box p{
+  line-height:1.5;
+}
+
+.next-demo,
+.close-demo{
+  margin-top:20px;
+  padding:12px 20px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.close-demo{
+  float:right;
+}
+
+</style>
+ <script>
+
+const demoSteps = [
+
+{
+title:"Welcome to HIT FOR HIT Command Center",
+text:"This is mission control for the event. Everything from artists, staff, schedule, streaming, and checklists lives here."
+},
+
+{
+title:"Dashboard",
+text:"This is your home base. Check event status, alerts, and anything that needs immediate attention."
+},
+
+{
+title:"Artist Check-In",
+text:"When an artist arrives, confirm their agreement, wristband, performance order, and readiness."
+},
+
+{
+title:"Event Timeline",
+text:"Follow the schedule. Battles, intermissions, and announcements should stay on time."
+},
+
+{
+title:"Live Production",
+text:"Before doors open, verify cameras, audio, livestream, and internet connection."
+},
+
+{
+title:"Checklist",
+text:"Complete tasks and check them off. Everyone stays updated in real time."
+},
+
+{
+title:"Voting",
+text:"Monitor votes and confirm results before announcing winners."
+},
+
+{
+title:"End of Night",
+text:"Save content, collect paperwork, pack equipment, and prepare notes for the next battle."
+}
+
+];
+
+let demoIndex=0;
+
+
+function startDemo(){
+
+demoIndex=0;
+
+document.getElementById("demoOverlay").style.display="flex";
+
+showDemo();
+
+}
+
+
+function showDemo(){
+
+let step=demoSteps[demoIndex];
+
+document.getElementById("demoTitle").innerHTML=step.title;
+
+document.getElementById("demoText").innerHTML=step.text;
+
+}
+
+
+function nextDemo(){
+
+demoIndex++;
+
+if(demoIndex >= demoSteps.length){
+
+closeDemo();
+
+alert("Demo complete. Welcome to HIT FOR HIT Command Center!");
+
+return;
+
+}
+
+showDemo();
+
+}
+
+
+function closeDemo(){
+
+document.getElementById("demoOverlay").style.display="none";
+
+}
+
+</script> 
 </body>
 </html>
