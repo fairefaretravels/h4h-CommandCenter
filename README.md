@@ -1,4 +1,4 @@
-Subject: HIT FOR HIT — Command Center is live + what's next
+HIT FOR HIT — Command Center is live + what's next
 
 Team,
 
