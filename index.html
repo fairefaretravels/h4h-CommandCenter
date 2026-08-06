@@ -823,163 +823,56 @@ async function init(){
   });
 }
 init();
+
+<button onclick="startCommandTour()" class="demo-btn">
+🎬 Staff Tour
+</button>
+
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js"></script>
+
+<script>
+
+function startCommandTour(){
+
+const tour = window.driver.js.driver({
+
+showProgress:true,
+
+steps:[
+
+{
+element:".tabs",
+popover:{
+title:"Navigation",
+description:"Use these tabs to move through checklists, timeline, battles, staff, and ideas."
+}
+},
+
+{
+element:"#view-checklist",
+popover:{
+title:"Event Checklist",
+description:"This is where the team tracks every task for battle day."
+}
+},
+
+{
+element:".overall",
+popover:{
+title:"Progress Tracker",
+description:"Shows how much of the event preparation is complete."
+}
+}
+
+]
+
+});
+
+tour.drive();
+
+}
+
 </script>
-  <div id="demoOverlay" class="demo-overlay">
-  <div class="demo-box">
 
-    <button onclick="closeDemo()" class="close-demo">✕</button>
-
-    <h2 id="demoTitle"></h2>
-
-    <p id="demoText"></p>
-
-    <button onclick="nextDemo()" class="next-demo">
-      Next →
-    </button>
-
-  </div>
-</div>
-
-
-<style>
-
-.demo-overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.85);
-  z-index:9999;
-  align-items:center;
-  justify-content:center;
-}
-
-.demo-box{
-  background:#111;
-  color:white;
-  max-width:420px;
-  padding:30px;
-  border-radius:18px;
-  text-align:center;
-  border:1px solid #333;
-}
-
-.demo-box h2{
-  margin-bottom:15px;
-}
-
-.demo-box p{
-  line-height:1.5;
-}
-
-.next-demo,
-.close-demo{
-  margin-top:20px;
-  padding:12px 20px;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-.close-demo{
-  float:right;
-}
-
-</style>
- <script>
-
-const demoSteps = [
-
-{
-title:"Welcome to HIT FOR HIT Command Center",
-text:"This is mission control for the event. Everything from artists, staff, schedule, streaming, and checklists lives here."
-},
-
-{
-title:"Dashboard",
-text:"This is your home base. Check event status, alerts, and anything that needs immediate attention."
-},
-
-{
-title:"Artist Check-In",
-text:"When an artist arrives, confirm their agreement, wristband, performance order, and readiness."
-},
-
-{
-title:"Event Timeline",
-text:"Follow the schedule. Battles, intermissions, and announcements should stay on time."
-},
-
-{
-title:"Live Production",
-text:"Before doors open, verify cameras, audio, livestream, and internet connection."
-},
-
-{
-title:"Checklist",
-text:"Complete tasks and check them off. Everyone stays updated in real time."
-},
-
-{
-title:"Voting",
-text:"Monitor votes and confirm results before announcing winners."
-},
-
-{
-title:"End of Night",
-text:"Save content, collect paperwork, pack equipment, and prepare notes for the next battle."
-}
-
-];
-
-let demoIndex=0;
-
-
-function startDemo(){
-
-demoIndex=0;
-
-document.getElementById("demoOverlay").style.display="flex";
-
-showDemo();
-
-}
-
-
-function showDemo(){
-
-let step=demoSteps[demoIndex];
-
-document.getElementById("demoTitle").innerHTML=step.title;
-
-document.getElementById("demoText").innerHTML=step.text;
-
-}
-
-
-function nextDemo(){
-
-demoIndex++;
-
-if(demoIndex >= demoSteps.length){
-
-closeDemo();
-
-alert("Demo complete. Welcome to HIT FOR HIT Command Center!");
-
-return;
-
-}
-
-showDemo();
-
-}
-
-
-function closeDemo(){
-
-document.getElementById("demoOverlay").style.display="none";
-
-}
-
-</script> 
 </body>
 </html>
