@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HIT FOR HIT Artist Check-In</title>
+
+<style>
+
+body{
+background:#0E0C10;
+color:white;
+font-family:Arial,sans-serif;
+padding:20px;
+}
+
+h1{
+text-align:center;
+}
+
+.card{
+background:#1B181D;
+border:1px solid #332E36;
+border-radius:12px;
+padding:20px;
+margin-bottom:15px;
+}
+
+.artist{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+}
+
+button{
+background:#E8283F;
+color:white;
+border:none;
+padding:12px 18px;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+button.done{
+background:#F2B705;
+color:#000;
+}
+
+.status{
+font-size:13px;
+color:#35D6FF;
+}
+
+.checks label{
+display:block;
+margin:8px 0;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+HIT FOR HIT<br>
+ARTIST CHECK-IN
+</h1>
+
+
+<div id="artists"></div>
+
+
+<script type="module">
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import { 
+getFirestore,
+doc,
+setDoc,
+onSnapshot
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+const firebaseConfig = {
+
+apiKey:"YOUR_API_KEY",
+authDomain:"hit-for-hit-events.firebaseapp.com",
+projectId:"hit-for-hit-events"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db=getFirestore(app);
+
+
+
+const artists=[
+
+"Baddest Rebel",
+"CoCo The Queen",
+"Solidfam Louie",
+"Pharaoh Fresh",
+"Ivonna Pearl",
+"Ms. Lingtheboss"
+
+];
+
+
+
+let checkins={};
+
+
+
+const room="august-6-battle";
+
+const ref=doc(
+db,
+"h4h-artists",
+room
+);
+
+
+
+onSnapshot(ref,(snap)=>{
+
+if(snap.exists()){
+
+checkins=snap.data();
+
+}
+
+render();
+
+});
+
+
+
+function render(){
+
+const box=document.getElementById("artists");
+
+box.innerHTML="";
+
+
+artists.forEach((name,index)=>{
+
+
+const data=checkins[index] || {
+
+arrived:false,
+agreement:false,
+wristband:false,
+ready:false
+
+};
+
+
+box.innerHTML += `
+
+<div class="card">
+
+<div class="artist">
+
+<h2>${name}</h2>
+
+<span class="status">
+${data.arrived ? "ARRIVED":"WAITING"}
+</span>
+
+</div>
+
+
+<div class="checks">
+
+<label>
+<input type="checkbox"
+${data.arrived?"checked":""}
+onchange="update(${index},'arrived',this.checked)">
+ Arrived
+</label>
+
+
+<label>
+<input type="checkbox"
+${data.agreement?"checked":""}
+onchange="update(${index},'agreement',this.checked)">
+ Agreement Signed
+</label>
+
+
+<label>
+<input type="checkbox"
+${data.wristband?"checked":""}
+onchange="update(${index},'wristband',this.checked)">
+ Wristband Given
+</label>
+
+
+<label>
+<input type="checkbox"
+${data.ready?"checked":""}
+onchange="update(${index},'ready',this.checked)">
+ Ready To Perform
+</label>
+
+
+</div>
+
+</div>
+
+`;
+
+
+});
+
+
+}
+
+
+
+window.update=async function(index,field,value){
+
+
+if(!checkins[index]){
+
+checkins[index]={};
+
+}
+
+
+checkins[index][field]=value;
+
+
+await setDoc(ref,checkins);
+
+
+}
+
+
+
+</script>
+
+
+</body>
+</html>
