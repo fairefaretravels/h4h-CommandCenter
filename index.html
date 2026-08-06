@@ -244,6 +244,28 @@
 .demo-btn:hover{
   background:#222;
 }
+ .staff-links{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  margin-top:15px;
+  flex-wrap:wrap;
+}
+
+.staff-links a{
+  color:#35D6FF;
+  border:1px solid #332E36;
+  padding:8px 14px;
+  border-radius:20px;
+  text-decoration:none;
+  font-size:12px;
+}
+
+.staff-links a:hover{
+  color:white;
+  border-color:#E8283F;
+} 
+ <div 
 </style>
 </head>
 <body>
@@ -325,6 +347,10 @@ Start Team Demo
   </div>
 
   <footer>
+    <div class="staff-links">
+  <a href="/STAFF/ARTIST-CHECKIN/">Artist Check-In</a>
+  <a href="/STAFF/ARTIST-MANAGER/">Artist Manager</a>
+</div>
     HIT FOR HIT × STV RADIOMELTDOWN — Independent Artist Battle Platform<br>
     <button class="print-btn" onclick="window.print()">Print / Export Checklist</button>
   </footer>
