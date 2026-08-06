@@ -389,20 +389,57 @@ const STORAGE_KEY = 'h4h-command-center-state';
 let state = { checks:{}, notes:{}, anchor:{date:null, doors:'19:00'} };
 let saveTimer = null;
 
+// storage wrapper: uses window.storage when present, otherwise fallback to localStorage
+const storageWrapper = (function(){
+  const hasWindowStorage = !!(window.storage && typeof window.storage.get === 'function' && typeof window.storage.set === 'function');
+  if(hasWindowStorage){
+    return {
+      async get(k){
+        try{
+          const res = await window.storage.get(k, true);
+          return res && res.value ? res.value : null;
+        }catch(e){ return null; }
+      },
+      async set(k,v){
+        try{
+          await window.storage.set(k, v, true);
+          return true;
+        }catch(e){
+          return false;
+        }
+      }
+    };
+  }else{
+    return {
+      async get(k){
+        return localStorage.getItem(k);
+      },
+      async set(k,v){
+        try{
+          localStorage.setItem(k, v);
+          return true;
+        }catch(e){
+          return false;
+        }
+      }
+    };
+  }
+})();
+
 function todayStr(){ const d=new Date(); return d.toISOString().slice(0,10); }
 
 async function loadState(){
   try{
-    const res = await window.storage.get(STORAGE_KEY, true);
-    if(res && res.value){
-      const parsed = JSON.parse(res.value);
+    const raw = await storageWrapper.get(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
       state = Object.assign(state, parsed);
     }
-  }catch(e){ /* no saved state yet */ }
+  }catch(e){ /* ignore - no saved state */ }
   if(!state.anchor.date) state.anchor.date = todayStr();
   document.getElementById('eventDate').value = state.anchor.date;
   document.getElementById('doorsTime').value = state.anchor.doors || '19:00';
-  document.getElementById('syncNote').textContent = 'Synced with your team \u2014 checks are shared across every device on this dashboard.';
+  document.getElementById('syncNote').textContent = (window.storage ? 'Synced with your team — checks are shared across every device on this dashboard.' : 'Using local device storage — share state manually to sync.');
 }
 
 function queueSave(){
@@ -410,12 +447,42 @@ function queueSave(){
   document.getElementById('syncNote').textContent = 'Saving...';
   saveTimer = setTimeout(async ()=>{
     try{
-      await window.storage.set(STORAGE_KEY, JSON.stringify(state), true);
-      document.getElementById('syncNote').textContent = 'Synced with your team \u2014 checks are shared across every device on this dashboard.';
+      const ok = await storageWrapper.set(STORAGE_KEY, JSON.stringify(state));
+      document.getElementById('syncNote').textContent = ok ? (window.storage ? 'Synced with your team — checks are shared across every device on this dashboard.' : 'Saved to this device') : 'Could not sync — changes saved on this device only.';
     }catch(e){
-      document.getElementById('syncNote').textContent = 'Could not sync \u2014 changes saved on this device only.';
+      document.getElementById('syncNote').textContent = 'Could not sync — changes saved on this device only.';
     }
   }, 400);
+}
+
+/* ================= HELPERS ================= */
+function createSectionHeader(sec, done, total){
+  const head = document.createElement('div');
+  head.className = 'section-head';
+  head.tabIndex = 0;
+  head.setAttribute('role', 'button');
+  head.setAttribute('aria-expanded', 'true');
+
+  const left = document.createElement('div');
+  left.className = 'section-head-left';
+  const ico = document.createElement('span'); ico.className = 'section-icon'; ico.textContent = sec.icon;
+  const title = document.createElement('span'); title.className = 'section-title'; title.textContent = sec.title;
+  left.appendChild(ico); left.appendChild(title);
+
+  const right = document.createElement('div'); right.style.display = 'flex'; right.style.alignItems = 'center'; right.style.gap = '12px';
+  const count = document.createElement('span'); count.className = 'section-count'; count.textContent = `${done}/${total}`;
+  const barWrap = document.createElement('div'); barWrap.className = 'section-bar';
+  const track = document.createElement('div'); track.className = 'bar-track';
+  const fill = document.createElement('div'); fill.className = 'bar-fill';
+  fill.style.width = (total ? (done/total*100) : 0) + '%';
+  fill.style.background = `var(--${sec.color})`;
+  track.appendChild(fill);
+  barWrap.appendChild(track);
+  const chev = document.createElement('span'); chev.className = 'chev'; chev.textContent = '▾';
+  right.appendChild(count); right.appendChild(barWrap); right.appendChild(chev);
+
+  head.appendChild(left); head.appendChild(right);
+  return head;
 }
 
 /* ================= RENDER: CHECKLISTS ================= */
@@ -428,50 +495,73 @@ function renderChecklists(){
     secEl.id = 'sec-'+sec.id;
 
     const total = sec.items.length;
-    const done = sec.items.filter((_,i)=>state.checks[sec.id+'-'+i]).length;
+    const done = sec.items.filter((_,i)=>!!state.checks[sec.id+'-'+i]).length;
 
-    secEl.innerHTML = `
-      <div class="section-head" onclick="toggleSection('${sec.id}')">
-        <div class="section-head-left">
-          <span class="section-icon">${sec.icon}</span>
-          <span class="section-title">${sec.title}</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <span class="section-count">${done}/${total}</span>
-          <div class="section-bar"><div class="bar-track"><div class="bar-fill" style="width:${total?done/total*100:0}%;background:var(--${sec.color})"></div></div></div>
-          <span class="chev">▾</span>
-        </div>
-      </div>
-      <div class="section-body"></div>
-    `;
-    const body = secEl.querySelector('.section-body');
+    const head = createSectionHeader(sec, done, total);
+    const body = document.createElement('div'); body.className = 'section-body';
+
+    // event: toggle collapse
+    head.addEventListener('click', ()=>{
+      const collapsed = secEl.classList.toggle('collapsed');
+      head.setAttribute('aria-expanded', !collapsed);
+    });
+    head.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); head.click(); }
+    });
+
+    // build list
     sec.items.forEach((text,i)=>{
       const key = sec.id+'-'+i;
       const checked = !!state.checks[key];
+
       const row = document.createElement('div');
-      row.className = 'item-row' + (checked?' checked':'');
-      row.innerHTML = `
-        <input type="checkbox" class="checkbox" ${checked?'checked':''} data-key="${key}">
-        <span class="item-text">${text}</span>
-        ${sec.notes ? `<input type="text" class="item-note" placeholder="Assigned to..." data-notekey="${key}" value="${(state.notes[key]||'').replace(/"/g,'&quot;')}">` : ''}
-      `;
-      body.appendChild(row);
-      row.querySelector('.checkbox').addEventListener('change', e=>{
-        state.checks[key] = e.target.checked;
-        row.classList.toggle('checked', e.target.checked);
+      row.className = 'item-row' + (checked ? ' checked' : '');
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.className = 'checkbox';
+      checkbox.checked = checked;
+      checkbox.dataset.key = key;
+      checkbox.id = `chk-${key}`;
+
+      const label = document.createElement('label');
+      label.htmlFor = checkbox.id;
+      label.className = 'item-text';
+      label.textContent = text;
+
+      row.appendChild(checkbox);
+      row.appendChild(label);
+
+      if(sec.notes){
+        const note = document.createElement('input');
+        note.type = 'text';
+        note.className = 'item-note';
+        note.placeholder = 'Assigned to...';
+        note.dataset.notekey = key;
+        note.value = state.notes[key] || '';
+        row.appendChild(note);
+
+        note.addEventListener('input', e=>{
+          state.notes[key] = e.target.value;
+          queueSave();
+        });
+      }
+
+      checkbox.addEventListener('change', e=>{
+        const isChecked = e.target.checked;
+        state.checks[key] = isChecked;
+        row.classList.toggle('checked', isChecked);
         queueSave();
         renderOverall();
         renderSectionHeader(sec);
         renderAlerts();
       });
-      const noteInput = row.querySelector('.item-note');
-      if(noteInput){
-        noteInput.addEventListener('input', e=>{
-          state.notes[key] = e.target.value;
-          queueSave();
-        });
-      }
+
+      body.appendChild(row);
     });
+
+    secEl.appendChild(head);
+    secEl.appendChild(body);
     root.appendChild(secEl);
   });
 }
@@ -481,30 +571,20 @@ function renderSectionHeader(sec){
   if(!secEl) return;
   const total = sec.items.length;
   const done = sec.items.filter((_,i)=>state.checks[sec.id+'-'+i]).length;
-  secEl.querySelector('.section-count').textContent = `${done}/${total}`;
-  secEl.querySelector('.section-bar .bar-fill').style.width = (total?done/total*100:0)+'%';
+  const countEl = secEl.querySelector('.section-count');
+  if(countEl) countEl.textContent = `${done}/${total}`;
+  const fill = secEl.querySelector('.section-bar .bar-fill');
+  if(fill) fill.style.width = (total?done/total*100:0)+'%';
 }
 
 function toggleSection(id){
-  document.getElementById('sec-'+id).classList.toggle('collapsed');
-}
-
-function renderOverall(){
-  let total=0, done=0;
-  SECTIONS.forEach(sec=>{
-    total += sec.items.length;
-    sec.items.forEach((_,i)=>{ if(state.checks[sec.id+'-'+i]) done++; });
-  });
-  const pct = total ? Math.round(done/total*100) : 0;
-  document.getElementById('overallPct').textContent = pct+'%';
-  document.getElementById('overallLabel').textContent = `${done} of ${total} tasks complete`;
-  document.getElementById('overallBar').style.width = pct+'%';
+  const el = document.getElementById('sec-'+id);
+  if(el) el.classList.toggle('collapsed');
 }
 
 /* ================= RENDER: TIMELINE / BATTLE ================= */
 function fmtOffsetTime(anchorDate, offsetMin){
-  const t = new Date(anchorDate.getTime() + offsetMin*60000);
-  return t;
+  return new Date(anchorDate.getTime() + offsetMin*60000);
 }
 
 function renderTimelineList(containerId, list, anchorDate, now){
@@ -517,7 +597,13 @@ function renderTimelineList(containerId, list, anchorDate, now){
     const isNow = now >= evTime && now < fmtOffsetTime(anchorDate, nextOff);
     const div = document.createElement('div');
     div.className = 'tl-item' + (isPast?' past':'') + (isNow?' now':'');
-    div.innerHTML = `<div class="tl-time">${ev.time}</div><div class="tl-activity">${ev.label}${isNow?'<span class="tl-now-flag">NOW</span>':''}</div>`;
+    const t = document.createElement('div'); t.className = 'tl-time'; t.textContent = ev.time;
+    const a = document.createElement('div'); a.className = 'tl-activity'; a.textContent = ev.label;
+    if(isNow){
+      const f = document.createElement('span'); f.className = 'tl-now-flag'; f.textContent = 'NOW';
+      a.appendChild(f);
+    }
+    div.appendChild(t); div.appendChild(a);
     body.appendChild(div);
   });
 }
@@ -525,23 +611,40 @@ function renderTimelineList(containerId, list, anchorDate, now){
 /* ================= RENDER: STAFF / IDEAS ================= */
 function renderStaff(){
   const body = document.getElementById('staffBody');
-  body.innerHTML = STAFF.map(([role,resp])=>`
-    <div class="staff-card"><div class="staff-role">${role}</div><div class="staff-resp">${resp}</div></div>
-  `).join('');
+  body.innerHTML = '';
+  STAFF.forEach(([role,resp])=>{
+    const card = document.createElement('div'); card.className='staff-card';
+    const r = document.createElement('div'); r.className='staff-role'; r.textContent = role;
+    const s = document.createElement('div'); s.className='staff-resp'; s.textContent = resp;
+    card.appendChild(r); card.appendChild(s);
+    body.appendChild(card);
+  });
 }
 
 function renderIdeas(){
   const body = document.getElementById('ideasBody');
-  body.innerHTML = IDEAS.map(([tag,text])=>`
-    <div class="idea-card"><span class="idea-tag">${tag}</span>${text}</div>
-  `).join('');
+  body.innerHTML = '';
+  IDEAS.forEach(([tag,text])=>{
+    const card = document.createElement('div'); card.className='idea-card';
+    const t = document.createElement('span'); t.className='idea-tag'; t.textContent = tag;
+    card.appendChild(t);
+    const p = document.createElement('span'); p.textContent = ' ' + text;
+    card.appendChild(p);
+    body.appendChild(card);
+  });
 }
 
 /* ================= CLOCK / PHASE / ALERTS ================= */
 function getAnchorDate(){
   const dateVal = document.getElementById('eventDate').value || todayStr();
   const timeVal = document.getElementById('doorsTime').value || '19:00';
-  return new Date(dateVal+'T'+timeVal+':00');
+  // Construct date in local timezone safely
+  const [y,m,d] = dateVal.split('-').map(Number);
+  const [hh,mm] = timeVal.split(':').map(Number);
+  const dt = new Date();
+  dt.setFullYear(y, m-1, d);
+  dt.setHours(hh, mm, 0, 0);
+  return dt;
 }
 
 function tick(){
@@ -555,8 +658,8 @@ function tick(){
   for(let i=0;i<all.length;i++){
     if(diffMin >= all[i].off){ current = all[i]; next = all[i+1] || null; }
   }
-  document.getElementById('phaseLabel').textContent = current.label.toUpperCase();
-  document.getElementById('phaseDetail').textContent = next ? `Next: ${next.label} at ${next.time}` : 'Event wrapped \u2014 great work tonight.';
+  document.getElementById('phaseLabel').textContent = (current && current.label) ? current.label.toUpperCase() : '—';
+  document.getElementById('phaseDetail').textContent = next ? `Next: ${next.label} at ${next.time}` : 'Event wrapped — great work tonight.';
 
   let targetOff, label;
   if(diffMin < 0){ targetOff = 0; label = 'TIME TO DOORS'; }
@@ -566,7 +669,7 @@ function tick(){
   const cdEl = document.getElementById('cdValue');
   const cdLabelEl = document.getElementById('cdLabel');
   if(targetOff === null){
-    cdEl.textContent = '\u2014';
+    cdEl.textContent = '—';
     cdLabelEl.textContent = 'EVENT COMPLETE';
   } else {
     const targetTime = fmtOffsetTime(anchor, targetOff);
@@ -585,6 +688,7 @@ function tick(){
 
 function pctFor(secId){
   const sec = SECTIONS.find(s=>s.id===secId);
+  if(!sec) return 0;
   const total = sec.items.length;
   const done = sec.items.filter((_,i)=>state.checks[sec.id+'-'+i]).length;
   return total ? done/total : 0;
@@ -607,7 +711,7 @@ function renderAlerts(diffMinArg){
   checks.forEach(c=>{
     const p = pctFor(c.sec);
     if(diffMin >= c.min && diffMin < 0 && p < 1){
-      const secTitle = SECTIONS.find(s=>s.id===c.sec).title;
+      const secTitle = (SECTIONS.find(s=>s.id===c.sec) || {}).title || c.sec;
       const minsToDoors = Math.round(-diffMin);
       list.push({level:c.level, text:`<b>${secTitle}</b> is at ${Math.round(p*100)}% with about ${minsToDoors} min to doors. Close it out now so nothing gets rushed.`});
     }
@@ -620,18 +724,28 @@ function renderAlerts(diffMinArg){
     list.push({level:'crit', text:`Doors are open and <b>Live Streaming</b> isn't fully checked. Run a 30-second private test now to confirm audio before Battle 1.`});
   }
   if(diffMin >= 160 && diffMin < 200 && pctFor('content') < 1){
-    list.push({level:'warn', text:`Winners are being crowned \u2014 make sure the <b>winner interview and group photo</b> are captured before the crowd disperses.`});
+    list.push({level:'warn', text:`Winners are being crowned — make sure the <b>winner interview and group photo</b> are captured before the crowd disperses.`});
   }
-  if(diffMin >= 240 && pctFor('eon') < 1){
-    list.push({level:'warn', text:`Breakdown time. ${SECTIONS.find(s=>s.id==='eon').items.length - Math.round(pctFor('eon')*SECTIONS.find(s=>s.id==='eon').items.length)} closing tasks are still open on <b>End of Night</b>.`});
+
+  // Fixed: proper calculation and full sentence for End of Night tasks
+  if(diffMin >= 240){
+    const eonSection = SECTIONS.find(s=>s.id==='eon');
+    if(eonSection){
+      const totalEon = eonSection.items.length;
+      const doneEon = eonSection.items.filter((_,i)=>state.checks['eon-'+i]).length;
+      const remaining = totalEon - doneEon;
+      if(remaining > 0){
+        list.push({level:'warn', text:`Breakdown time. ${remaining} end-of-night task${remaining>1?'s are':' is'} still open — wrap up and lock equipment.`});
+      }
+    }
   }
 
   if(list.length===0){
-    alertsEl.innerHTML = `<div class="alert-empty">No alerts right now \u2014 you're on schedule. This panel will speak up as showtime approaches.</div>`;
+    alertsEl.innerHTML = `<div class="alert-empty">No alerts right now — you're on schedule. This panel will speak up as showtime approaches.</div>`;
   } else {
     alertsEl.innerHTML = list.map(a=>`
       <div class="alert ${a.level}">
-        <span class="a-tag">${a.level==='crit'?'\u26a0 attention':a.level==='warn'?'heads up':'suggestion'}</span>
+        <span class="a-tag">${a.level==='crit'?'6a0 attention':a.level==='warn'?'heads up':'suggestion'}</span>
         <span class="a-body">${a.text}</span>
       </div>
     `).join('');
