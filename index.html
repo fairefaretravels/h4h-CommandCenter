@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HIT FOR HIT — Aug 6 Winners</title>
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+html,body{
+  width:100%;
+  min-height:100%;
+}
+body{
+  background:#030303;
+  color:#fff;
+  font-family:Arial, Helvetica, sans-serif;
+  overflow:hidden;
+}
+/* Background */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,255,255,.08), transparent 30%),
+    radial-gradient(circle at 20% 80%, rgba(255,0,0,.05), transparent 30%),
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,.04), transparent 30%);
+  pointer-events:none;
+}
+/* Grain */
+.grain{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.08;
+  z-index:20;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+}
+/* Main */
+.wrapper{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:30px 20px;
+  position:relative;
+  z-index:2;
+}
+.card{
+  width:min(900px, 100%);
+  text-align:center;
+}
+/* Header */
+.kicker{
+  font-size:12px;
+  letter-spacing:5px;
+  font-weight:700;
+  opacity:.55;
+  margin-bottom:18px;
+  text-transform:uppercase;
+}
+.title{
+  font-size:clamp(42px, 10vw, 100px);
+  line-height:.9;
+  font-weight:900;
+  letter-spacing:-5px;
+  text-transform:uppercase;
+}
+.title span{
+  display:block;
+}
+.subtitle{
+  margin-top:20px;
+  font-size:13px;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  opacity:.45;
+}
+/* Typing area */
+.reveal{
+  margin:65px auto 50px;
+  min-height:210px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+.label{
+  font-size:12px;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  opacity:.45;
+  margin-bottom:22px;
+}
+#winner{
+  font-size:clamp(36px, 8vw, 76px);
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-2px;
+  text-transform:uppercase;
+  min-height:80px;
+  position:relative;
+}
+/* Cursor */
+.cursor{
+  display:inline-block;
+  width:4px;
+  height:.85em;
+  margin-left:8px;
+  background:#fff;
+  animation:blink .7s infinite;
+  vertical-align:-5px;
+}
+@keyframes blink{
+  0%,45%{opacity:1}
+  46%,100%{opacity:0}
+}
+/* Winner number */
+.counter{
+  margin-top:20px;
+  font-size:11px;
+  letter-spacing:3px;
+  opacity:.35;
+}
+/* Buttons */
+.buttons{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  flex-wrap:wrap;
+  opacity:0;
+  transform:translateY(20px);
+  transition:all .8s ease;
+  pointer-events:none;
+}
+.buttons.show{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
+.btn{
+  min-width:210px;
+  padding:16px 24px;
+  border:1px solid rgba(255,255,255,.35);
+  background:rgba(255,255,255,.04);
+  color:#fff;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  transition:.25s ease;
+  backdrop-filter:blur(10px);
+}
+.btn:hover{
+  background:#fff;
+  color:#000;
+  border-color:#fff;
+  transform:translateY(-3px);
+}
+/* Bottom */
+.footer{
+  position:fixed;
+  bottom:20px;
+  left:0;
+  right:0;
+  text-align:center;
+  font-size:9px;
+  letter-spacing:3px;
+  opacity:.25;
+  text-transform:uppercase;
+  z-index:3;
+}
+/* Mobile */
+@media(max-width:600px){
+  .title{
+    letter-spacing:-3px;
+  }
+  .reveal{
+    margin:50px auto 40px;
+    min-height:190px;
+  }
+  #winner{
+    font-size:clamp(32px, 10vw, 55px);
+  }
+  .btn{
+    width:100%;
+    max-width:300px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<main class="wrapper">
+  <section class="card">
+    <div class="kicker">
+      HIT FOR HIT BATTLES™
+    </div>
+    <h1 class="title">
+      <span>Road</span>
+      <span>To The Crown</span>
+    </h1>
+    <div class="subtitle">
+      August 6 — Qualifier Winners
+    </div>
+    <div class="reveal">
+      <div class="label">
+        Advancing To The Next Round
+      </div>
+      <div id="winner">
+        <span id="typed"></span>
+        <span class="cursor"></span>
+      </div>
+      <div class="counter" id="counter">
+        WINNER 1 OF 3
+      </div>
+    </div>
+    <div class="buttons" id="buttons">
+      <a class="btn" href="/commandcenter">
+        Command Center
+      </a>
+      <a class="btn" href="/Aug6B1">
+        Aug 6 Battle
+      </a>
+    </div>
+  </section>
+</main>
+<div class="footer">
+  Powered by STV Radiomeltdown
+</div>
+<script>
+const winners = [
+  "Ivonna Pearl",
+  "Solidfam Louie",
+  "Coco The Queen"
+];
+const typed = document.getElementById("typed");
+const counter = document.getElementById("counter");
+const buttons = document.getElementById("buttons");
+let winnerIndex = 0;
+let charIndex = 0;
+const typingSpeed = 105;
+const pauseAfterName = 1500;
+const pauseBetweenWinners = 700;
+function typeWinner(){
+  const name = winners[winnerIndex];
+  if(charIndex < name.length){
+    typed.textContent += name.charAt(charIndex);
+    charIndex++;
+    setTimeout(typeWinner, typingSpeed);
+  }else{
+    setTimeout(() => {
+      if(winnerIndex < winners.length - 1){
+        winnerIndex++;
+        charIndex = 0;
+        typed.textContent = "";
+        counter.textContent =
+          "WINNER " + (winnerIndex + 1) + " OF " + winners.length;
+        setTimeout(typeWinner, pauseBetweenWinners);
+      }else{
+        counter.textContent = "ALL QUALIFIERS ADVANCE";
+        buttons.classList.add("show");
+      }
+    }, pauseAfterName);
+  }
+}
+/* Start reveal */
+setTimeout(typeWinner, 1000);
+</script>
+</body>
+</html>
