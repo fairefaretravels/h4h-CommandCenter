@@ -271,11 +271,11 @@
   z-index:9999;
   cursor:pointer;
   pointer-events:auto;
-} 
- <div 
+}
 </style>
 </head>
 <body>
+ 
 <div class="wrap">
 
   <div class="masthead">
@@ -988,6 +988,17 @@ document.getElementById("demoOverlay").style.display="none";
 
 }
 
-</script> 
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  const printBtn = document.querySelector(".print-btn");
+
+  if(printBtn){
+    printBtn.addEventListener("click", function(){
+      window.print();
+    });
+  }
+});
+</script>
+  
 </body>
 </html>
