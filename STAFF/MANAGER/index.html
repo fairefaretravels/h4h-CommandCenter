@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HIT FOR HIT Artist Manager</title>
+
+<style>
+
+:root{
+--bg:#0E0C10;
+--panel:#1B181D;
+--line:#332E36;
+--red:#E8283F;
+--gold:#F2B705;
+--cyan:#35D6FF;
+--text:#F1EEE9;
+}
+
+body{
+margin:0;
+padding:20px;
+background:var(--bg);
+color:var(--text);
+font-family:Arial,sans-serif;
+}
+
+h1{
+font-size:32px;
+text-align:center;
+}
+
+.container{
+max-width:600px;
+margin:auto;
+}
+
+.card{
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:12px;
+padding:20px;
+margin-bottom:20px;
+}
+
+
+input,select,textarea{
+
+width:100%;
+padding:12px;
+margin:8px 0;
+background:#0b090d;
+border:1px solid var(--line);
+color:white;
+border-radius:8px;
+
+}
+
+
+button{
+
+width:100%;
+padding:14px;
+background:var(--red);
+border:0;
+color:white;
+font-weight:bold;
+border-radius:8px;
+cursor:pointer;
+
+}
+
+
+.artist{
+
+border-top:1px solid var(--line);
+padding:12px 0;
+
+}
+
+
+.tag{
+
+color:var(--cyan);
+font-size:12px;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<h1>
+HIT FOR HIT<br>
+ARTIST MANAGER
+</h1>
+
+
+
+<div class="card">
+
+
+<h2>Add Artist</h2>
+
+
+<input id="name" placeholder="Artist Name">
+
+
+<input id="phone" placeholder="Phone">
+
+
+<input id="email" placeholder="Email">
+
+
+<select id="event">
+
+<option>Qualifier #1</option>
+<option>Qualifier #2</option>
+<option>Semifinal</option>
+<option>Championship</option>
+
+</select>
+
+
+
+<input id="date" type="date">
+
+
+
+<select id="category">
+
+<option>Male</option>
+<option>Female</option>
+<option>Open</option>
+
+</select>
+
+
+
+<input id="song" placeholder="Performance Song">
+
+
+<textarea id="notes" placeholder="Notes"></textarea>
+
+
+
+<button onclick="addArtist()">
+ADD ARTIST
+</button>
+
+
+</div>
+
+
+
+
+<div class="card">
+
+<h2>Registered Artists</h2>
+
+<div id="artistList">
+Loading...
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<script type="module">
+
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+
+getFirestore,
+collection,
+addDoc,
+onSnapshot,
+serverTimestamp
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDcynPbO4ci6DIb6QCn7G-rFKmxjp3ZmRU",
+  authDomain: "hit-for-hit-events.firebaseapp.com",
+  projectId: "hit-for-hit-events",
+  storageBucket: "hit-for-hit-events.firebasestorage.app",
+  messagingSenderId: "563307788704",
+  appId: "1:563307788704:web:9b0d1adf39d7fab7444cc5",
+  measurementId: "G-ZDC1S4LLZF"
+};
+
+
+
+
+const app = initializeApp(firebaseConfig);
+
+const db=getFirestore(app);
+
+
+
+const artistsRef=collection(db,"artists");
+
+
+
+
+
+window.addArtist=async function(){
+
+
+const artist={
+
+
+name:
+document.getElementById("name").value,
+
+
+phone:
+document.getElementById("phone").value,
+
+
+email:
+document.getElementById("email").value,
+
+
+event:
+document.getElementById("event").value,
+
+
+date:
+document.getElementById("date").value,
+
+
+category:
+document.getElementById("category").value,
+
+
+song:
+document.getElementById("song").value,
+
+
+notes:
+document.getElementById("notes").value,
+
+
+agreementSigned:false,
+
+checkedIn:false,
+
+wristband:false,
+
+ready:false,
+
+
+created:
+serverTimestamp()
+
+
+};
+
+
+
+if(!artist.name){
+
+alert("Artist name required");
+
+return;
+
+}
+
+
+
+await addDoc(artistsRef,artist);
+
+
+
+alert(
+artist.name+" added!"
+);
+
+
+
+document.querySelectorAll("input,textarea")
+.forEach(e=>e.value="");
+
+
+
+};
+
+
+
+
+
+
+onSnapshot(artistsRef,(snap)=>{
+
+
+const box=document.getElementById("artistList");
+
+
+box.innerHTML="";
+
+
+
+snap.forEach(doc=>{
+
+
+const a=doc.data();
+
+
+
+box.innerHTML += `
+
+
+<div class="artist">
+
+
+<h3>${a.name}</h3>
+
+
+<div class="tag">
+
+${a.event} | ${a.category}
+
+</div>
+
+
+<p>
+🎵 ${a.song || "No song added"}
+</p>
+
+
+<p>
+Agreement:
+${a.agreementSigned?"✅":"❌"}
+<br>
+
+Check-In:
+${a.checkedIn?"✅":"❌"}
+
+<br>
+
+Ready:
+${a.ready?"✅":"❌"}
+
+</p>
+
+
+</div>
+
+
+`;
+
+
+
+});
+
+
+
+});
+
+
+
+
+
+</script>
+
+
+
+</body>
+
+</html>
