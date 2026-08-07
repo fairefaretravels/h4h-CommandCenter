@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HIT FOR HIT — Artist Manager</title>
+<style>
+:root{
+  --bg:#0E0C10;
+  --panel:#1B181D;
+  --panel2:#221E24;
+  --line:#332E36;
+  --red:#E8283F;
+  --gold:#F2B705;
+  --cyan:#35D6FF;
+  --text:#F1EEE9;
+  --muted:#948F97;
+  --green:#43D17A;
+}
+*{
+  box-sizing:border-box;
+}
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+body{
+  min-height:100vh;
+}
+.container{
+  width:100%;
+  max-width:850px;
+  margin:auto;
+  padding:25px 18px 60px;
+}
+/* HEADER */
+.header{
+  border:1px solid var(--line);
+  background:
+    radial-gradient(circle at 10% 0%,rgba(232,40,63,.18),transparent 40%),
+    radial-gradient(circle at 90% 0%,rgba(53,214,255,.10),transparent 40%),
+    var(--panel);
+  padding:28px 22px;
+  border-radius:10px;
+  margin-bottom:20px;
+}
+.kicker{
+  color:var(--cyan);
+  font-size:11px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  font-weight:bold;
+}
+h1{
+  margin:8px 0 5px;
+  font-size:clamp(32px,8vw,55px);
+  line-height:.95;
+  text-transform:uppercase;
+}
+.subtitle{
+  color:var(--muted);
+  font-size:13px;
+}
+/* CARDS */
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:20px;
+  margin-bottom:18px;
+}
+.card h2{
+  margin:0 0 5px;
+  font-size:20px;
+  text-transform:uppercase;
+}
+.card-description{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:18px;
+}
+/* FORM */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.field{
+  display:flex;
+  flex-direction:column;
+}
+.field.full{
+  grid-column:1 / -1;
+}
+label{
+  font-size:10px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  margin-bottom:6px;
+}
+input,select{
+  width:100%;
+  padding:13px;
+  background:#0B090D;
+  border:1px solid var(--line);
+  color:var(--text);
+  border-radius:6px;
+  outline:none;
+}
+input:focus,select:focus{
+  border-color:var(--cyan);
+}
+/* CHECKLIST */
+.checklist{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.check-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:13px;
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:6px;
+  cursor:pointer;
+  transition:.2s;
+}
+.check-item:hover{
+  border-color:#514A54;
+}
+.check-item input{
+  width:20px;
+  height:20px;
+  flex-shrink:0;
+  accent-color:var(--gold);
+  cursor:pointer;
+}
+.check-text{
+  font-size:14px;
+  flex:1;
+}
+.check-item:has(input:checked){
+  border-color:rgba(242,183,5,.5);
+  background:rgba(242,183,5,.06);
+}
+.check-item:has(input:checked) .check-text{
+  color:var(--gold);
+}
+/* PROGRESS */
+.progress-wrap{
+  margin-top:18px;
+}
+.progress-header{
+  display:flex;
+  justify-content:space-between;
+  font-size:11px;
+  color:var(--muted);
+  margin-bottom:7px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+.progress{
+  height:8px;
+  background:#0B090D;
+  border:1px solid var(--line);
+  border-radius:10px;
+  overflow:hidden;
+}
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--red),var(--gold));
+  transition:.25s;
+}
+/* SUBMIT */
+.submit{
+  width:100%;
+  border:0;
+  padding:16px;
+  border-radius:7px;
+  background:var(--red);
+  color:white;
+  font-weight:bold;
+  letter-spacing:1.5px;
+  cursor:pointer;
+  font-size:13px;
+  transition:.2s;
+}
+.submit:hover{
+  transform:translateY(-1px);
+}
+.submit:disabled{
+  background:#3A343A;
+  color:#777;
+  cursor:not-allowed;
+  transform:none;
+}
+/* MESSAGE */
+.message{
+  display:none;
+  padding:13px;
+  margin-bottom:18px;
+  border-radius:6px;
+  font-size:13px;
+}
+.message.show{
+  display:block;
+}
+.message.error{
+  background:rgba(232,40,63,.1);
+  border:1px solid rgba(232,40,63,.4);
+  color:#ff7c8a;
+}
+.message.success{
+  background:rgba(67,209,122,.08);
+  border:1px solid rgba(67,209,122,.35);
+  color:var(--green);
+}
+/* ARTISTS */
+.artist{
+  border:1px solid var(--line);
+  background:var(--panel2);
+  padding:15px;
+  border-radius:7px;
+  margin-top:10px;
+}
+.artist-name{
+  font-weight:bold;
+  font-size:16px;
+}
+.artist-meta{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:4px;
+}
+.ready{
+  display:inline-block;
+  margin-top:8px;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:9px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  background:rgba(67,209,122,.1);
+  color:var(--green);
+  border:1px solid rgba(67,209,122,.3);
+}
+footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:9px;
+  letter-spacing:2px;
+  padding:25px 0;
+  text-transform:uppercase;
+}
+@media(max-width:600px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+  .field.full{
+    grid-column:auto;
+  }
+  .container{
+    padding:15px 12px 40px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="header">
+    <div class="kicker">HIT FOR HIT BATTLES</div>
+    <h1>Artist Manager</h1>
+    <div class="subtitle">
+      Artist registration and performance readiness
+    </div>
+  </header>
+  <div id="message" class="message"></div>
+  <!-- ARTIST INFORMATION -->
+  <section class="card">
+<h2>Artist Information</h2>
+<div class="card-description">
+  Complete the artist information before starting the readiness checklist.
+</div>
+<div class="grid">
+  <div class="field">
+    <label>Artist Name</label>
+    <input id="artistName" type="text" placeholder="Artist name">
+  </div>
+  <div class="field">
+    <label>Phone</label>
+    <input id="artistPhone" type="tel" placeholder="Phone number">
+  </div>
+  <div class="field">
+    <label>Email</label>
+    <input id="artistEmail" type="email" placeholder="Artist email">
+  </div>
+  <div class="field">
+    <label>Event</label>
+    <select id="event">
+      <option value="">Select Event</option>
+      <option>Qualifier #1</option>
+      <option>Qualifier #2</option>
+      <option>Semifinal Showcase</option>
+      <option>Party Takeover Crowning</option>
+    </select>
+  </div>
+</div>
+  </section>
+  <!-- PERFORMANCE CHECKLIST -->
+  <section class="card">
+<h2>Performance Readiness</h2>
+<div class="card-description">
+  Every item must be completed before the artist can be added.
+</div>
+<div class="checklist">
+  <label class="check-item">
+    <input type="checkbox" class="required-check">
+    <span class="check-text">Music in email</span>
+  </label>
+  <label class="check-item">
+    <input type="checkbox" class="required-check">
+    <span class="check-text">Song 1</span>
+  </label>
+  <label class="check-item">
+    <input type="checkbox" class="required-check">
+    <span class="check-text">Song 2</span>
+  </label>
+  <label class="check-item">
+    <input type="checkbox" class="required-check">
+    <span class="check-text">Song 3</span>
+  </label>
+  <label class="check-item">
+    <input type="checkbox" class="required-check">
+    <span class="check-text">Flash drive backup</span>
+  </label>
+  <label class="check-item">
+    <input type="checkbox" class="required-check">
+    <span class="check-text">Music on our flash drive</span>
+  </label>
+  <label class="check-item">
+    <input type="checkbox" class="required-check">
+    <span class="check-text">DJ has music</span>
+  </label>
+  <label class="check-item">
+    <input type="checkbox" class="required-check">
+    <span class="check-text">Ready to perform</span>
+  </label>
+  <label class="check-item">
+    <input type="checkbox" class="required-check">
+    <span class="check-text">Pre Interview</span>
+  </label>
+  <label class="check-item">
+    <input type="checkbox" class="required-check">
+    <span class="check-text">Post Interview</span>
+  </label>
+  <label class="check-item">
+    <input type="checkbox" class="required-check">
+    <span class="check-text">Promo Drop</span>
+  </label>
+  <label class="check-item">
+    <input type="checkbox" class="required-check">
+    <span class="check-text">Photo with team</span>
+  </label>
+</div>
+<div class="progress-wrap">
+  <div class="progress-header">
+    <span>Readiness</span>
+    <span id="progressText">0 / 12 Complete</span>
+  </div>
+  <div class="progress">
+    <div id="progressBar" class="progress-bar"></div>
+  </div>
+</div>
+  </section>
+  <!-- SUBMIT -->
+  <section class="card">
+<button id="addButton" class="submit" disabled>
+  COMPLETE ALL CHECKS TO ADD ARTIST
+</button>
+  </section>
+  <!-- REGISTERED ARTISTS -->
+  <section class="card">
+<h2>Registered Artists</h2>
+<div class="card-description">
+  Artists successfully added to the event.
+</div>
+<div id="artistList">
+  Loading...
+</div>
+  </section>
+  <footer>
+    HIT FOR HIT × STV RADIOMELTDOWN<br>
+    ARTIST MANAGEMENT SYSTEM
+  </footer>
+</div>
+<script type="module">
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  onSnapshot,
+  serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+/* FIREBASE */
+const firebaseConfig = {
+  apiKey: "AIzaSyDcynPbO4ci6DIb6QCnG7-rFKmxjp3ZmRU",
+  authDomain: "hit-for-hit-events.firebaseapp.com",
+  projectId: "hit-for-hit-events",
+  storageBucket: "hit-for-hit-events.firebasestorage.app",
+  messagingSenderId: "563307788704",
+  appId: "1:563307788704:web:9b0d1adf39d7fab7444cc5",
+  measurementId: "G-ZDC1S4LLZF"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const artistsRef = collection(db,"artists");
+/* ELEMENTS */
+const checks = document.querySelectorAll(".required-check");
+const addButton = document.getElementById("addButton");
+const progressBar = document.getElementById("progressBar");
+const progressText = document.getElementById("progressText");
+const message = document.getElementById("message");
+/* CHECKLIST */
+function updateChecklist(){
+  const total = checks.length;
+  const complete =
+    [...checks].filter(check => check.checked).length;
+  const percent =
+    Math.round((complete / total) * 100);
+  progressBar.style.width = percent + "%";
+  progressText.textContent =
+    complete + " / " + total + " Complete";
+  if(complete === total){
+    addButton.disabled = false;
+    addButton.textContent =
+      "ADD ARTIST";
+  }else{
+    addButton.disabled = true;
+    addButton.textContent =
+      "COMPLETE ALL CHECKS TO ADD ARTIST";
+  }
+}
+checks.forEach(check => {
+  check.addEventListener("change",updateChecklist);
+});
+/* MESSAGE */
+function showMessage(text,type){
+  message.textContent = text;
+  message.className =
+    "message show " + type;
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+/* ADD ARTIST */
+addButton.addEventListener("click",async function(){
+  const name =
+    document.getElementById("artistName").value.trim();
+  const phone =
+    document.getElementById("artistPhone").value.trim();
+  const email =
+    document.getElementById("artistEmail").value.trim();
+  const event =
+    document.getElementById("event").value;
+  if(!name || !phone || !email || !event){
+    showMessage(
+      "Complete all artist information before adding the artist.",
+      "error"
+    );
+    return;
+  }
+  const allComplete =
+    [...checks].every(check => check.checked);
+  if(!allComplete){
+    showMessage(
+      "The artist cannot be added until every checklist item is complete.",
+      "error"
+    );
+    return;
+  }
+  addButton.disabled = true;
+  addButton.textContent = "ADDING ARTIST...";
+  try{
+    const checklist = {};
+    checks.forEach(check => {
+      const label =
+        check.parentElement
+          .querySelector(".check-text")
+          .textContent
+          .trim();
+      checklist[label] = check.checked;
+    });
+    await addDoc(artistsRef,{
+      name:name,
+      phone:phone,
+      email:email,
+      event:event,
+      checklist:checklist,
+      ready:true,
+      created:serverTimestamp()
+    });
+    showMessage(
+      name + " has been added successfully.",
+      "success"
+    );
+    document.getElementById("artistName").value="";
+    document.getElementById("artistPhone").value="";
+    document.getElementById("artistEmail").value="";
+    document.getElementById("event").value="";
+    checks.forEach(check => {
+      check.checked=false;
+    });
+    updateChecklist();
+  }catch(error){
+    console.error(error);
+    showMessage(
+      "Artist could not be added. Check your Firebase connection and Firestore rules.",
+      "error"
+    );
+    updateChecklist();
+  }
+});
+/* LOAD ARTISTS */
+onSnapshot(
+  artistsRef,
+  snapshot => {
+    const box =
+      document.getElementById("artistList");
+    box.innerHTML="";
+    if(snapshot.empty){
+      box.innerHTML =
+        '<div style="color:var(--muted);font-size:13px;">No artists registered yet.</div>';
+      return;
+    }
+    snapshot.forEach(doc => {
+      const artist = doc.data();
+      const card =
+        document.createElement("div");
+      card.className="artist";
+      const name =
+        document.createElement("div");
+      name.className="artist-name";
+      name.textContent =
+        artist.name || "Unnamed Artist";
+      const meta =
+        document.createElement("div");
+      meta.className="artist-meta";
+      meta.textContent =
+        (artist.event || "No event") +
+        " • " +
+        (artist.email || "No email");
+      const ready =
+        document.createElement("span");
+      ready.className="ready";
+      ready.textContent =
+        artist.ready
+        ? "Ready to Perform"
+        : "Not Ready";
+      card.appendChild(name);
+      card.appendChild(meta);
+      card.appendChild(ready);
+      box.appendChild(card);
+    });
+  },
+  error => {
+    console.error(error);
+    document.getElementById("artistList").textContent =
+      "Unable to load artists. Check Firestore permissions.";
+  }
+);
+/* INITIAL STATE */
+updateChecklist();
+</script>
+</body>
+</html>
