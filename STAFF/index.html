@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>H4H Staff Command Center</title>
+<style>
+:root{
+  --bg:#080808;
+  --panel:#111;
+  --panel2:#171717;
+  --line:#292929;
+  --text:#f5f5f5;
+  --muted:#999;
+  --accent:#fff;
+  --danger:#ff4d4d;
+  --success:#55d98b;
+}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+body{
+  background:
+    radial-gradient(circle at top,#1a1a1a 0%,#080808 45%,#050505 100%);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  min-height:100vh;
+}
+.grain{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.035;
+  z-index:999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+}
+/* TOP NAV */
+.topnav{
+  position:sticky;
+  top:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  padding:14px 18px;
+  background:rgba(5,5,5,.94);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(14px);
+}
+.topnav a{
+  color:#fff;
+  text-decoration:none;
+  border:1px solid #333;
+  padding:10px 14px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.7px;
+  transition:.2s;
+}
+.topnav a:hover{
+  background:#fff;
+  color:#000;
+}
+.topnav .home{
+  margin-right:auto;
+}
+/* CONTAINER */
+.container{
+  width:min(1100px,94%);
+  margin:0 auto;
+  padding:35px 0 70px;
+}
+/* HEADER */
+.hero{
+  border:1px solid var(--line);
+  background:linear-gradient(145deg,#151515,#0c0c0c);
+  border-radius:18px;
+  padding:28px;
+  margin-bottom:22px;
+  box-shadow:0 15px 45px rgba(0,0,0,.35);
+}
+.eyebrow{
+  font-size:11px;
+  letter-spacing:2px;
+  color:#aaa;
+  font-weight:800;
+  margin-bottom:10px;
+}
+.hero h1{
+  font-size:clamp(30px,6vw,58px);
+  line-height:.95;
+  text-transform:uppercase;
+  letter-spacing:-2px;
+}
+.hero p{
+  color:var(--muted);
+  margin-top:14px;
+  line-height:1.5;
+  max-width:700px;
+}
+.event-date{
+  display:inline-block;
+  margin-top:18px;
+  border:1px solid #444;
+  padding:8px 12px;
+  border-radius:7px;
+  font-size:12px;
+  font-weight:800;
+}
+/* SECTIONS */
+.section{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:16px;
+  margin-bottom:20px;
+  overflow:hidden;
+}
+.section-header{
+  padding:18px 20px;
+  border-bottom:1px solid var(--line);
+  background:#131313;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.section-header h2{
+  font-size:17px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+.section-header span{
+  color:#888;
+  font-size:11px;
+  font-weight:700;
+}
+/* ADD STAFF */
+.add-area{
+  padding:20px;
+}
+.form-grid{
+  display:grid;
+  grid-template-columns:1.4fr 1fr;
+  gap:12px;
+}
+input,
+select,
+textarea{
+  width:100%;
+  background:#080808;
+  border:1px solid #333;
+  color:#fff;
+  border-radius:9px;
+  padding:13px 14px;
+  outline:none;
+  font-size:14px;
+}
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:#777;
+}
+textarea{
+  min-height:100px;
+  resize:vertical;
+  margin-top:12px;
+}
+.button-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+button{
+  border:0;
+  cursor:pointer;
+  border-radius:9px;
+  padding:12px 16px;
+  font-weight:900;
+  letter-spacing:.5px;
+  font-size:12px;
+  transition:.2s;
+}
+button:hover{
+  transform:translateY(-1px);
+}
+.primary{
+  background:#fff;
+  color:#000;
+}
+.secondary{
+  background:#222;
+  color:#fff;
+  border:1px solid #3b3b3b;
+}
+.danger{
+  background:#291010;
+  color:#ff8585;
+  border:1px solid #5b2525;
+}
+.success{
+  background:#102419;
+  color:#72e3a1;
+  border:1px solid #245a38;
+}
+/* STAFF CARDS */
+.staff-list{
+  padding:12px;
+  display:grid;
+  gap:10px;
+}
+.staff-card{
+  background:var(--panel2);
+  border:1px solid #292929;
+  border-radius:12px;
+  padding:16px;
+}
+.staff-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.staff-name{
+  font-size:17px;
+  font-weight:900;
+}
+.role{
+  display:inline-block;
+  margin-top:5px;
+  font-size:11px;
+  color:#aaa;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+}
+.status{
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.8px;
+  padding:6px 9px;
+  border-radius:6px;
+  border:1px solid #333;
+  color:#888;
+}
+.status.in{
+  color:var(--success);
+  border-color:#245a38;
+  background:#102419;
+}
+.time-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:13px;
+}
+.time-box{
+  background:#0a0a0a;
+  border:1px solid #292929;
+  border-radius:8px;
+  padding:10px;
+}
+.time-label{
+  display:block;
+  font-size:9px;
+  text-transform:uppercase;
+  color:#777;
+  letter-spacing:1px;
+  margin-bottom:4px;
+}
+.time-value{
+  font-size:13px;
+  font-weight:800;
+}
+.card-buttons{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.card-buttons button{
+  flex:1;
+  min-width:120px;
+}
+.empty{
+  text-align:center;
+  color:#777;
+  padding:35px 15px;
+  font-size:13px;
+}
+/* SUMMARY */
+.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  padding:15px;
+}
+.stat{
+  background:#0b0b0b;
+  border:1px solid #292929;
+  border-radius:10px;
+  padding:15px;
+}
+.stat-number{
+  font-size:28px;
+  font-weight:900;
+}
+.stat-label{
+  color:#777;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-top:5px;
+}
+/* EMAIL */
+.email-area{
+  padding:20px;
+}
+.email-box{
+  background:#0a0a0a;
+  border:1px solid #292929;
+  border-radius:10px;
+  padding:15px;
+  color:#aaa;
+  font-family:monospace;
+  white-space:pre-wrap;
+  max-height:350px;
+  overflow:auto;
+  font-size:12px;
+  line-height:1.6;
+}
+.big-email{
+  width:100%;
+  margin-top:12px;
+  padding:16px;
+  background:#fff;
+  color:#000;
+  font-size:13px;
+}
+/* FOOTER */
+footer{
+  text-align:center;
+  color:#555;
+  font-size:10px;
+  letter-spacing:1px;
+  padding:25px 0;
+}
+/* MOBILE */
+@media(max-width:650px){
+  .topnav{
+    padding:10px;
+  }
+  .topnav a{
+    flex:1;
+    text-align:center;
+    padding:9px 8px;
+    font-size:10px;
+  }
+  .topnav .home{
+    margin-right:0;
+  }
+  .container{
+    width:94%;
+    padding-top:20px;
+  }
+  .hero{
+    padding:22px;
+  }
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+  .summary-grid{
+    grid-template-columns:1fr 1fr 1fr;
+  }
+  .stat{
+    padding:12px 8px;
+  }
+  .stat-number{
+    font-size:22px;
+  }
+  .staff-top{
+    align-items:flex-start;
+  }
+  .time-row{
+    grid-template-columns:1fr;
+  }
+  .card-buttons button{
+    min-width:100%;
+  }
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<nav class="topnav">
+  <a class="home" href="/HOME">HOME</a>
+  <a href="/MANAGER">MANAGER</a>
+  <a href="/ArtistCheckIn">ARTIST CHECK-IN</a>
+</nav>
+<main class="container">
+  <section class="hero">
+    <div class="eyebrow">HIT FOR HIT • STAFF OPERATIONS</div>
+    <h1>STAFF<br>COMMAND CENTER</h1>
+    <p>
+      Staff attendance, assignments and event check-in.
+      Clock staff in and out during the event, then email the completed
+      attendance report to management.
+    </p>
+    <div class="event-date">
+      EVENT DATE: <span id="eventDate"></span>
+    </div>
+  </section>
+  <!-- ADD STAFF -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Add Staff</h2>
+      <span>BUILD YOUR EVENT ROSTER</span>
+    </div>
+    <div class="add-area">
+      <div class="form-grid">
+        <input
+          id="staffName"
+          type="text"
+          placeholder="Staff member name"
+          autocomplete="off"
+        >
+        <select id="staffRole">
+          <option value="">Select Role</option>
+          <option>Door</option>
+          <option>Security</option>
+          <option>Team Lead</option>
+          <option>Cameraman</option>
+          <option>Photographer</option>
+          <option>Host</option>
+          <option>Crowd Control</option>
+          <option>DJ</option>
+          <option>Audio / Tech</option>
+          <option>Stage Manager</option>
+          <option>Production</option>
+          <option>Social Media</option>
+          <option>Merch</option>
+          <option>Check-In</option>
+          <option>Runner</option>
+          <option>Manager</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="button-row">
+        <button
+          class="primary"
+          onclick="addStaff()">
+          + ADD STAFF
+        </button>
+        <button
+          class="secondary"
+          onclick="clearRoster()">
+          CLEAR ROSTER
+        </button>
+      </div>
+    </div>
+  </section>
+  <!-- SUMMARY -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Attendance</h2>
+      <span id="liveStatus">READY</span>
+    </div>
+    <div class="summary-grid">
+      <div class="stat">
+        <div class="stat-number" id="totalStaff">0</div>
+        <div class="stat-label">Staff</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number" id="clockedIn">0</div>
+        <div class="stat-label">Clocked In</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number" id="clockedOut">0</div>
+        <div class="stat-label">Completed</div>
+      </div>
+    </div>
+  </section>
+  <!-- STAFF LIST -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Staff Checklist</h2>
+      <span>
+        CLOCK IN / CLOCK OUT
+      </span>
+    </div>
+    <div
+      id="staffList"
+      class="staff-list">
+      <div class="empty">
+        No staff added yet.<br>
+        Add your event staff above.
+      </div>
+    </div>
+  </section>
+  <!-- NOTES -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Attendance Notes</h2>
+      <span>OPTIONAL</span>
+    </div>
+    <div class="email-area">
+      <textarea
+        id="attendanceNotes"
+        placeholder="Add notes about attendance, late arrivals, early departures, assignments, incidents, etc."
+      ></textarea>
+    </div>
+  </section>
+  <!-- EMAIL -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Email Attendance</h2>
+      <span>
+        SEND REPORT TO MANAGEMENT
+      </span>
+    </div>
+    <div class="email-area">
+      <div
+        id="emailPreview"
+        class="email-box">
+Attendance report will appear here.
+      </div>
+      <button
+        class="big-email"
+        onclick="emailAttendance()">
+        EMAIL ATTENDANCE REPORT
+      </button>
+    </div>
+  </section>
+</main>
+<footer>
+  HIT FOR HIT BATTLES™ • STAFF COMMAND CENTER
+</footer>
+<script>
+/* =========================================================
+   STAFF DATA
+========================================================= */
+let staff = JSON.parse(
+  localStorage.getItem("H4H_STAFF_ROSTER") || "[]"
+);
+/* =========================================================
+   EVENT DATE
+========================================================= */
+function getToday(){
+  const now = new Date();
+  return now.toLocaleDateString("en-US",{
+    month:"long",
+    day:"numeric",
+    year:"numeric"
+  });
+}
+document.getElementById("eventDate").textContent = getToday();
+/* =========================================================
+   SAVE
+========================================================= */
+function saveStaff(){
+  localStorage.setItem(
+    "H4H_STAFF_ROSTER",
+    JSON.stringify(staff)
+  );
+}
+/* =========================================================
+   ADD STAFF
+========================================================= */
+function addStaff(){
+  const nameInput =
+    document.getElementById("staffName");
+  const roleInput =
+    document.getElementById("staffRole");
+  const name =
+    nameInput.value.trim();
+  const role =
+    roleInput.value;
+  if(!name){
+    alert("Enter the staff member's name.");
+    nameInput.focus();
+    return;
+  }
+  if(!role){
+    alert("Select a staff role.");
+    roleInput.focus();
+    return;
+  }
+  /*
+    If Other is selected, ask for the custom role.
+  */
+  let finalRole = role;
+  if(role === "Other"){
+    const customRole =
+      prompt("Enter the staff member's role:");
+    if(!customRole){
+      return;
+    }
+    finalRole =
+      customRole.trim();
+  }
+  const person = {
+    id:
+      Date.now() +
+      Math.random()
+        .toString(36)
+        .substring(2),
+    name:name,
+    role:finalRole,
+    clockIn:null,
+    clockOut:null
+  };
+  staff.push(person);
+  saveStaff();
+  nameInput.value = "";
+  roleInput.value = "";
+  render();
+  nameInput.focus();
+}
+/* =========================================================
+   CLOCK IN
+========================================================= */
+function clockIn(id){
+  const person =
+    staff.find(s => s.id === id);
+  if(!person) return;
+  if(person.clockIn){
+    alert(
+      person.name +
+      " is already clocked in."
+    );
+    return;
+  }
+  person.clockIn =
+    new Date().toISOString();
+  /*
+    If someone clocks in again after
+    being clocked out, we reset the
+    clock-out field.
+  */
+  person.clockOut = null;
+  saveStaff();
+  render();
+}
+/* =========================================================
+   CLOCK OUT
+========================================================= */
+function clockOut(id){
+  const person =
+    staff.find(s => s.id === id);
+  if(!person) return;
+  if(!person.clockIn){
+    alert(
+      "Clock " +
+      person.name +
+      " in first."
+    );
+    return;
+  }
+  if(person.clockOut){
+    alert(
+      person.name +
+      " is already clocked out."
+    );
+    return;
+  }
+  person.clockOut =
+    new Date().toISOString();
+  saveStaff();
+  render();
+}
+/* =========================================================
+   REMOVE STAFF
+========================================================= */
+function removeStaff(id){
+  const person =
+    staff.find(s => s.id === id);
+  if(!person) return;
+  const confirmDelete =
+    confirm(
+      "Remove " +
+      person.name +
+      " from the roster?"
+    );
+  if(!confirmDelete) return;
+  staff =
+    staff.filter(
+      s => s.id !== id
+    );
+  saveStaff();
+  render();
+}
+/* =========================================================
+   CLEAR ROSTER
+========================================================= */
+function clearRoster(){
+  if(!staff.length){
+    return;
+  }
+  const confirmed =
+    confirm(
+      "Clear the entire staff roster? This cannot be undone."
+    );
+  if(!confirmed) return;
+  staff = [];
+  saveStaff();
+  render();
+}
+/* =========================================================
+   FORMAT TIME
+========================================================= */
+function formatTime(timestamp){
+  if(!timestamp){
+    return "—";
+  }
+  return new Date(timestamp)
+    .toLocaleTimeString("en-US",{
+      hour:"numeric",
+      minute:"2-digit"
+    });
+}
+/* =========================================================
+   STATUS
+========================================================= */
+function getStatus(person){
+  if(
+    person.clockIn &&
+    !person.clockOut
+  ){
+    return "in";
+  }
+  if(
+    person.clockIn &&
+    person.clockOut
+  ){
+    return "complete";
+  }
+  return "out";
+}
+/* =========================================================
+   RENDER
+========================================================= */
+function render(){
+  const list =
+    document.getElementById("staffList");
+  if(!staff.length){
+    list.innerHTML = `
+      <div class="empty">
+        No staff added yet.<br>
+        Add your event staff above.
+      </div>
+    `;
+    updateStats();
+    updateEmailPreview();
+    return;
+  }
+  list.innerHTML =
+    staff.map(person => {
+      const status =
+        getStatus(person);
+      let statusText =
+        "NOT CLOCKED IN";
+      if(status === "in"){
+        statusText =
+          "CLOCKED IN";
+      }
+      if(status === "complete"){
+        statusText =
+          "COMPLETED";
+      }
+      return `
+        <div class="staff-card">
+          <div class="staff-top">
+            <div>
+              <div class="staff-name">
+                ${escapeHTML(person.name)}
+              </div>
+              <div class="role">
+                ${escapeHTML(person.role)}
+              </div>
+            </div>
+            <div
+              class="status ${status === "in" ? "in" : ""}">
+              ${statusText}
+            </div>
+          </div>
+          <div class="time-row">
+            <div class="time-box">
+              <span class="time-label">
+                Clock In
+              </span>
+              <span class="time-value">
+                ${formatTime(person.clockIn)}
+              </span>
+            </div>
+            <div class="time-box">
+              <span class="time-label">
+                Clock Out
+              </span>
+              <span class="time-value">
+                ${formatTime(person.clockOut)}
+              </span>
+            </div>
+          </div>
+          <div class="card-buttons">
+            <button
+              class="success"
+              onclick="clockIn('${person.id}')"
+              ${person.clockIn && !person.clockOut ? "disabled" : ""}>
+              CLOCK IN
+            </button>
+            <button
+              class="secondary"
+              onclick="clockOut('${person.id}')"
+              ${!person.clockIn || person.clockOut ? "disabled" : ""}>
+              CLOCK OUT
+            </button>
+            <button
+              class="danger"
+              onclick="removeStaff('${person.id}')">
+              REMOVE
+            </button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  updateStats();
+  updateEmailPreview();
+}
+/* =========================================================
+   STATS
+========================================================= */
+function updateStats(){
+  const total =
+    staff.length;
+  const active =
+    staff.filter(
+      s => s.clockIn && !s.clockOut
+    ).length;
+  const completed =
+    staff.filter(
+      s => s.clockIn && s.clockOut
+    ).length;
+  document.getElementById(
+    "totalStaff"
+  ).textContent = total;
+  document.getElementById(
+    "clockedIn"
+  ).textContent = active;
+  document.getElementById(
+    "clockedOut"
+  ).textContent = completed;
+  document.getElementById(
+    "liveStatus"
+  ).textContent =
+    active > 0
+      ? active + " STAFF ACTIVE"
+      : "READY";
+}
+/* =========================================================
+   EMAIL REPORT
+========================================================= */
+function buildEmailReport(){
+  let report = "";
+  report +=
+    "HIT FOR HIT — STAFF ATTENDANCE\n";
+  report +=
+    "Event Date: " +
+    getToday() +
+    "\n";
+  report +=
+    "====================================\n\n";
+  if(!staff.length){
+    report +=
+      "No staff members were added.\n";
+  }else{
+    staff.forEach((person,index) => {
+      report +=
+        (index + 1) +
+        ". " +
+        person.name +
+        "\n";
+      report +=
+        "Role: " +
+        person.role +
+        "\n";
+      report +=
+        "Clock In: " +
+        formatTime(person.clockIn) +
+        "\n";
+      report +=
+        "Clock Out: " +
+        formatTime(person.clockOut) +
+        "\n";
+      report +=
+        "------------------------------------\n";
+    });
+  }
+  report += "\nSUMMARY\n";
+  report +=
+    "Total Staff: " +
+    staff.length +
+    "\n";
+  report +=
+    "Currently Clocked In: " +
+    staff.filter(
+      s => s.clockIn && !s.clockOut
+    ).length +
+    "\n";
+  report +=
+    "Completed Attendance: " +
+    staff.filter(
+      s => s.clockIn && s.clockOut
+    ).length +
+    "\n";
+  const notes =
+    document.getElementById(
+      "attendanceNotes"
+    ).value.trim();
+  if(notes){
+    report +=
+      "\nNOTES\n";
+    report +=
+      notes +
+      "\n";
+  }
+  return report;
+}
+/* =========================================================
+   UPDATE EMAIL PREVIEW
+========================================================= */
+function updateEmailPreview(){
+  document.getElementById(
+    "emailPreview"
+  ).textContent =
+    buildEmailReport();
+}
+/* =========================================================
+   EMAIL ATTENDANCE
+========================================================= */
+function emailAttendance(){
+  const report =
+    buildEmailReport();
+  const subject =
+    encodeURIComponent(
+      "H4H Staff Attendance — " +
+      getToday()
+    );
+  const body =
+    encodeURIComponent(report);
+  /*
+    CHANGE THIS EMAIL ADDRESS
+    to the address you want attendance
+    reports sent to.
+  */
+  const email =
+    "H4Hbooking@radiomeltdown.online";
+  window.location.href =
+    "mailto:" +
+    email +
+    "?subject=" +
+    subject +
+    "&body=" +
+    body;
+}
+/* =========================================================
+   HTML SAFETY
+========================================================= */
+function escapeHTML(value){
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+/* =========================================================
+   NOTES AUTO-SAVE
+========================================================= */
+document
+  .getElementById("attendanceNotes")
+  .addEventListener(
+    "input",
+    updateEmailPreview
+  );
+/* =========================================================
+   INITIAL LOAD
+========================================================= */
+render();
+/*
+  Refresh the displayed email preview
+  and clock/status information.
+*/
+setInterval(() => {
+  render();
+},10000);
+</script>
+</body>
+</html>
