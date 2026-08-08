@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEAM CHECK-IN™ — A Private System for Teams Who Don't Want Another Subscription</title>
+<style>
+  :root{
+    --bg:#0c0c0f;
+    --panel:#17171c;
+    --panel2:#1f1f26;
+    --gold:#E8B94D;
+    --gold-soft:#f3d089;
+    --text:#f4f2ea;
+    --text-dim:#a9a9b3;
+    --border:#2b2b33;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Georgia','Iowan Old Style',serif;
+    line-height:1.65;
+  }
+  .sans{ font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif; }
+
+  .wrap{ max-width:760px; margin:0 auto; padding:0 24px; }
+
+  /* HERO */
+  .hero{
+    padding:90px 0 60px;
+    text-align:center;
+    border-bottom:1px solid var(--border);
+  }
+  .kicker{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    font-size:12.5px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:700;
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:42px;
+    font-weight:700;
+    line-height:1.2;
+    margin:0 0 22px;
+    letter-spacing:-0.5px;
+  }
+  .hero .sub{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    font-size:18px;
+    color:var(--text-dim);
+    max-width:560px;
+    margin:0 auto 34px;
+  }
+  .hero .sub strong{ color:var(--gold-soft); }
+
+  .cta-row{
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    flex-wrap:wrap;
+    font-family:'Segoe UI',system-ui,sans-serif;
+  }
+  .btn-primary, .btn-secondary{
+    display:inline-block;
+    padding:16px 28px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:700;
+    text-decoration:none;
+    letter-spacing:0.3px;
+    transition:transform .12s ease, opacity .12s ease;
+  }
+  .btn-primary{
+    background:var(--gold);
+    color:#20180a;
+  }
+  .btn-secondary{
+    background:transparent;
+    color:var(--text);
+    border:1px solid var(--border);
+  }
+  .btn-primary:hover, .btn-secondary:hover{ transform:translateY(-1px); opacity:0.92; }
+
+  /* ARTICLE BODY */
+  article{ padding:56px 0; }
+  article h2{
+    font-size:27px;
+    font-weight:700;
+    margin:56px 0 18px;
+    letter-spacing:-0.3px;
+  }
+  article h2:first-child{ margin-top:0; }
+  article p{
+    font-size:18px;
+    color:#ddd9cd;
+    margin:0 0 20px;
+  }
+  article p.lede{
+    font-size:20px;
+    color:var(--text);
+  }
+  .pull{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    font-size:22px;
+    font-weight:700;
+    color:var(--gold-soft);
+    border-left:3px solid var(--gold);
+    padding-left:20px;
+    margin:36px 0;
+    line-height:1.45;
+  }
+
+  /* ROLE GRID */
+  .role-grid{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin:28px 0 8px;
+  }
+  .role-chip{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:16px 8px;
+    text-align:center;
+    font-size:12.5px;
+    font-weight:600;
+  }
+  .role-chip .em{ display:block; font-size:22px; margin-bottom:6px; }
+
+  /* FEATURE CARDS */
+  .feature-list{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    margin:24px 0 8px;
+  }
+  .feature{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:20px 22px;
+  }
+  .feature .ftitle{
+    font-size:15.5px;
+    font-weight:700;
+    color:var(--gold-soft);
+    margin-bottom:6px;
+  }
+  .feature .fbody{
+    font-size:14.5px;
+    color:var(--text-dim);
+    line-height:1.55;
+  }
+
+  /* PRIVACY BLOCK */
+  .no-list{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    columns:2;
+    gap:24px;
+    margin:22px 0 8px;
+    font-size:15px;
+    color:var(--text-dim);
+  }
+  .no-list li{ margin-bottom:10px; break-inside:avoid; }
+
+  /* USE CASE GRID */
+  .use-grid{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:24px 0 8px;
+  }
+  .use-card{
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px 20px;
+  }
+  .use-card .utitle{ font-weight:700; font-size:14.5px; color:var(--gold-soft); margin-bottom:6px; }
+  .use-card .utext{ font-size:13.5px; color:var(--text-dim); line-height:1.5; }
+
+  /* OWNERSHIP BLOCK */
+  .ownership{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    background:linear-gradient(135deg,#241c0d,#17171c);
+    border:1px solid var(--gold);
+    border-radius:18px;
+    padding:34px 30px;
+    margin:40px 0;
+  }
+  .ownership h3{
+    font-size:20px;
+    margin:0 0 12px;
+    color:var(--gold-soft);
+  }
+  .ownership p{
+    font-size:15px;
+    color:#e3ded0;
+    margin:0 0 12px;
+  }
+  .ownership ul{
+    margin:16px 0 0;
+    padding-left:20px;
+    font-size:14.5px;
+    color:var(--text-dim);
+  }
+  .ownership li{ margin-bottom:8px; }
+
+  /* FINAL CTA */
+  .final-cta{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    text-align:center;
+    padding:60px 0 90px;
+    border-top:1px solid var(--border);
+  }
+  .final-cta h2{
+    font-family:'Georgia',serif;
+    font-size:30px;
+    margin:0 0 14px;
+  }
+  .final-cta .sub{
+    font-size:16px;
+    color:var(--text-dim);
+    max-width:480px;
+    margin:0 auto 30px;
+  }
+  .contact-note{
+    margin-top:18px;
+    font-size:13px;
+    color:var(--text-dim);
+  }
+  .contact-note a{ color:var(--gold-soft); }
+
+  footer{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    text-align:center;
+    padding:28px 0 40px;
+    font-size:12px;
+    color:#5c5c66;
+  }
+
+  @media (max-width:600px){
+    .hero h1{ font-size:32px; }
+    .role-grid{ grid-template-columns:repeat(2,1fr); }
+    .no-list{ columns:1; }
+    .use-grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="kicker">Team Coordination, Reimagined</div>
+    <h1>The Team Check-In Revolution:<br>What If Your Crew Never Had to Leave Their Post Again?</h1>
+    <p class="sub">A private, mobile-first coordination system for entertainment companies, arenas, and marketing teams — <strong>built for you, owned by you, and never sitting on someone else's subscription clock.</strong></p>
+    <div class="cta-row">
+      <a class="btn-primary" href="#contact">Get In Touch</a>
+      <a class="btn-secondary" href="#how-it-works">See How It Works</a>
+    </div>
+  </div>
+</div>
+
+<article class="wrap">
+
+  <h2>What if the problem was never the plan?</h2>
+  <p class="lede">In live events, the biggest problems rarely announce themselves. They're small. Someone needs water. A host needs a microphone. Security needs another set of eyes. An artist hasn't checked in. The DJ is missing a song. A camera operator needs a hand.</p>
+  <p>Someone leaves their post to go find the person who can solve it — and suddenly two positions are uncovered instead of one. That's how chaos starts. Not with one big failure, but with a dozen small ones happening at once, with nobody coordinating them.</p>
+
+  <div class="pull">Don't leave your post. Ask the team.</div>
+
+  <p>That's the whole idea behind <strong>TEAM CHECK-IN™</strong> — a simple, mobile-first coordination system that turns event and venue operations into a series of clear questions, one-tap buttons, and live status updates. No giant dashboard. No complicated training. No employee surveillance. Just: check in, do your checklist, stay on your post, ask for help when you need it, and help when you're free.</p>
+
+  <h2 id="how-it-works">Built for the way real teams actually work</h2>
+  <p>The system ships with eight ready-made operational roles, each with its own step-by-step flow — nobody sees a screen meant for a different job.</p>
+
+  <div class="role-grid">
+    <div class="role-chip"><span class="em">🔒</span>Security</div>
+    <div class="role-chip"><span class="em">🚪</span>Door / Check-In</div>
+    <div class="role-chip"><span class="em">🎤</span>Artist Check-In</div>
+    <div class="role-chip"><span class="em">🎙️</span>Host</div>
+    <div class="role-chip"><span class="em">🎧</span>DJ</div>
+    <div class="role-chip"><span class="em">📹</span>Camera</div>
+    <div class="role-chip"><span class="em">👥</span>Crowd Control</div>
+    <div class="role-chip"><span class="em">⭐</span>Team Lead</div>
+  </div>
+
+  <p>Security isn't asked the same questions as the DJ. The camera operator isn't handed the artist check-in process. The host doesn't have to navigate an operations manual. Everyone gets exactly what they need to do their job — nothing more.</p>
+
+  <h2>The checklist is the training</h2>
+  <p>Nobody has to memorize an entire event procedure before doors open. They just answer the next question.</p>
+  <p><em>Are you at your assigned position?</em> Yes — ready. No — need help. Then the system moves forward. Another question. Another check. Another confirmation. By the end, the team member knows their job because they just walked through it — not because they sat through a training deck three weeks ago.</p>
+
+  <h2>When something goes wrong</h2>
+  <p>This is where TEAM CHECK-IN™ earns its keep. Say the host suddenly needs water mid-soundcheck. Traditionally, someone leaves their position, walks the venue, and starts asking around — now they're away from their assignment, the host is still waiting, and somebody else is looking for <em>them</em>.</p>
+  <p>With TEAM CHECK-IN™, the request becomes a team task instead of a personal errand. The person stays at their post. An available teammate sees the request and taps <strong>🤝 I'll Handle It</strong>. Now everyone knows who's on it — a tiny interaction that solves a real operational problem.</p>
+
+  <div class="feature-list">
+    <div class="feature">
+      <div class="ftitle">🟢 I'm Available</div>
+      <div class="fbody">When someone finishes or pauses their primary assignment, they can flag themselves as available — turning your free staff into a mobile support layer instead of people wandering the venue looking for something to do.</div>
+    </div>
+    <div class="feature">
+      <div class="ftitle">🔊 Listen To This</div>
+      <div class="fbody">Not everyone processes information the same way, and loud venues make screens hard to read on the move. A one-tap audio readout puts the current question in someone's ear instead of forcing them to squint at a phone.</div>
+    </div>
+    <div class="feature">
+      <div class="ftitle">✅ Status, not surveillance</div>
+      <div class="fbody">Team leads see who's ready, who's working, and who needs help — never location history, personal files, or anything that looks like monitoring.</div>
+    </div>
+  </div>
+
+  <h2>Privacy isn't an afterthought</h2>
+  <p>Today's workplace software raises a legitimate question: how much access should an employer have to an employee's personal phone? TEAM CHECK-IN™ takes the opposite approach. We need to know your <em>work status</em> — not your personal life.</p>
+  <p>The system is designed around coordination, not surveillance. That means no:</p>
+  <ul class="no-list">
+    <li>Location tracking</li>
+    <li>Access to personal photos</li>
+    <li>Access to personal files</li>
+    <li>Screenshots</li>
+    <li>Invasive phone monitoring</li>
+    <li>Employee ratings</li>
+  </ul>
+  <p>The app should help the team work. It shouldn't become another boss living inside someone's phone.</p>
+
+  <h2>Small words, said at the right moment</h2>
+  <p>Events get stressful. Things go wrong. People get tired. The best software in the world can't fix a team that's mentally scattered — so TEAM CHECK-IN™ threads small, human moments through the experience. "We got this." "Move together." "Your part matters." "Take a breath. Reset. Handle the next thing."</p>
+  <p>Small, but intentional. A workplace isn't just a collection of tasks. It's people.</p>
+
+  <h2>Beyond the event floor</h2>
+  <p>TEAM CHECK-IN™ was built around live-event operations, but the same principle — keep people where they're needed, route help intelligently — applies anywhere a team is spread across a floor plan.</p>
+
+  <div class="use-grid">
+    <div class="use-card"><div class="utitle">Arenas & Venues</div><div class="utext">Coordinate gate staff, security, and vendors across a footprint too big to shout across.</div></div>
+    <div class="use-card"><div class="utitle">Entertainment Companies</div><div class="utext">Run consistent check-in flows across every show, tour stop, or production without retraining a new crew each time.</div></div>
+    <div class="use-card"><div class="utitle">Marketing Teams</div><div class="utext">Manage activations, pop-ups, and brand events where the same handful of roles repeat city to city.</div></div>
+    <div class="use-card"><div class="utitle">Restaurants & Hospitality</div><div class="utext">Know who can cover a station or handle a guest request without pulling someone off the floor to ask.</div></div>
+  </div>
+
+  <div class="ownership">
+    <h3>Yours. Not rented.</h3>
+    <p>Most team-coordination tools ask you to sign up for a platform, hand over your staff's data, and keep paying every month to keep the lights on. TEAM CHECK-IN™ is built differently: it's a private system, configured around your roles and your event, that your organization owns outright.</p>
+    <ul>
+      <li>No recurring subscription to track or renew</li>
+      <li>No vendor holding your team's data on their servers</li>
+      <li>No forced upgrades or feature paywalls mid-season</li>
+      <li>Configured once for your roles, reused for every event</li>
+    </ul>
+  </div>
+
+  <h2>The bigger vision</h2>
+  <p>What started as an event checklist is really a simple operating layer for teams — not surveillance, not bureaucracy, not another dashboard to babysit. A digital nervous system that lets people communicate needs, hand off tasks, and stay focused on what they were actually there to do.</p>
+  <p>The technology underneath can be as complex as it needs to be. The experience on the floor shouldn't be.</p>
+
+</article>
+
+<div class="final-cta" id="contact">
+  <div class="wrap">
+    <h2>TEAM CHECK-IN™</h2>
+    <div class="sub">Check in. Stay posted. Help the team. Let's build your private version — configured for your roles, owned by you, no trial to keep up with.</div>
+    <a class="btn-primary" href="mailto:press@radiomeltdown.com?subject=TEAM%20CHECK-IN%E2%84%A2%20Inquiry">Contact Our Team — press@radiomeltdown.com</a>
+    <div class="contact-note">Or reach out directly at <a href="mailto:press@radiomeltdown.com">press@radiomeltdown.com</a></div>
+  </div>
+</div>
+
+<footer>TEAM CHECK-IN™ — a private team coordination system.</footer>
+
+</body>
+</html>
