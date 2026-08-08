@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Hit For Hit — Battle Day Team Check-In</title>
+<style>
+  :root{
+    --bg:#0c0c0f;
+    --panel:#17171c;
+    --panel2:#1f1f26;
+    --gold:#E8B94D;
+    --gold-dim:#8a6d2e;
+    --red:#e8524d;
+    --green:#3fbf68;
+    --text:#f4f2ea;
+    --text-dim:#9a9aa3;
+    --border:#2b2b33;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;height:100%;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #app{
+    max-width:520px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:20px 18px 40px;
+  }
+  .top-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .brand{
+    display:flex;
+    flex-direction:column;
+    line-height:1.1;
+  }
+  .brand .h1{
+    font-size:22px;
+    font-weight:800;
+    letter-spacing:0.5px;
+    color:var(--gold);
+  }
+  .brand .h2{
+    font-size:12px;
+    color:var(--text-dim);
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin-top:2px;
+  }
+  .home-btn{
+    background:var(--panel2);
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    font-size:13px;
+    padding:8px 12px;
+    border-radius:10px;
+    cursor:pointer;
+  }
+  .home-btn:active{transform:scale(0.96);}
+
+  /* HOME SCREEN */
+  .role-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:8px;
+  }
+  .role-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:22px 10px;
+    text-align:center;
+    cursor:pointer;
+    transition:transform .08s ease, border-color .15s ease;
+  }
+  .role-card:active{transform:scale(0.96);}
+  .role-card.lead{
+    grid-column:1 / -1;
+    background:linear-gradient(135deg,#241c0d,#1a1a1f);
+    border-color:var(--gold-dim);
+  }
+  .role-emoji{font-size:34px;display:block;margin-bottom:8px;}
+  .role-name{font-size:14.5px;font-weight:700;letter-spacing:0.3px;}
+  .role-status{
+    display:inline-block;
+    margin-top:8px;
+    font-size:10.5px;
+    padding:3px 8px;
+    border-radius:20px;
+    background:var(--panel2);
+    color:var(--text-dim);
+    letter-spacing:0.5px;
+  }
+  .role-status.ready{background:rgba(63,191,104,0.15);color:var(--green);}
+
+  .home-sub{
+    color:var(--text-dim);
+    font-size:14px;
+    margin-bottom:6px;
+  }
+
+  /* PROGRESS */
+  .progress-wrap{margin:6px 0 22px;}
+  .progress-label{
+    font-size:12.5px;
+    color:var(--text-dim);
+    margin-bottom:8px;
+    letter-spacing:0.4px;
+  }
+  .progress-track{
+    height:8px;
+    background:var(--panel2);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--gold);
+    border-radius:6px;
+    transition:width .25s ease;
+  }
+
+  /* QUESTION CARD */
+  .stage{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+  }
+  .q-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:26px 22px;
+    margin-bottom:20px;
+  }
+  .q-role-tag{
+    font-size:11px;
+    color:var(--gold);
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+    font-weight:700;
+  }
+  .q-text{
+    font-size:21px;
+    font-weight:700;
+    line-height:1.35;
+  }
+  .q-hint{
+    font-size:13.5px;
+    color:var(--text-dim);
+    margin-top:10px;
+  }
+
+  /* YES/NO BUTTONS */
+  .yn-wrap{display:flex;flex-direction:column;gap:14px;}
+  .btn-big{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    font-size:19px;
+    font-weight:800;
+    padding:22px 18px;
+    border-radius:18px;
+    border:none;
+    cursor:pointer;
+    letter-spacing:0.5px;
+  }
+  .btn-yes{background:var(--green);color:#062012;}
+  .btn-no{background:var(--red);color:#2a0806;}
+  .btn-big:active{transform:scale(0.97);}
+
+  /* SELECT OPTIONS */
+  .opt-wrap{display:flex;flex-direction:column;gap:10px;}
+  .opt-btn{
+    background:var(--panel2);
+    border:1px solid var(--border);
+    color:var(--text);
+    font-size:16px;
+    font-weight:600;
+    padding:16px 18px;
+    border-radius:14px;
+    text-align:left;
+    cursor:pointer;
+  }
+  .opt-btn:active{transform:scale(0.98);background:#26262e;}
+  .opt-btn.selected{border-color:var(--gold);background:rgba(232,185,77,0.1);}
+
+  /* MULTI CHECK */
+  .check-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px 16px;
+    margin-bottom:10px;
+    cursor:pointer;
+  }
+  .check-box{
+    width:26px;height:26px;
+    border-radius:7px;
+    border:2px solid var(--gold-dim);
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;
+    color:var(--bg);
+  }
+  .check-item.checked .check-box{background:var(--gold);border-color:var(--gold);}
+  .check-item.checked{border-color:var(--gold);}
+  .check-label{font-size:15.5px;font-weight:600;}
+
+  /* NEXT BUTTON (for select/multicheck steps) */
+  .btn-continue{
+    margin-top:16px;
+    background:var(--gold);
+    color:#20180a;
+    font-size:17px;
+    font-weight:800;
+    padding:18px;
+    border:none;
+    border-radius:16px;
+    cursor:pointer;
+  }
+  .btn-continue:disabled{
+    background:var(--panel2);
+    color:var(--text-dim);
+    cursor:not-allowed;
+  }
+  .btn-continue:active:not(:disabled){transform:scale(0.98);}
+
+  /* NO-ANSWER FIX SCREEN */
+  .fix-card{
+    background:linear-gradient(135deg,#2a1210,#1a1a1f);
+    border:1px solid #5a2320;
+    border-radius:20px;
+    padding:24px 22px;
+  }
+  .fix-icon{font-size:34px;margin-bottom:10px;}
+  .fix-title{
+    font-size:12px;
+    color:var(--red);
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    font-weight:800;
+    margin-bottom:8px;
+  }
+  .fix-text{
+    font-size:18px;
+    font-weight:700;
+    line-height:1.4;
+    margin-bottom:22px;
+  }
+  .btn-fix-continue{
+    width:100%;
+    background:var(--gold);
+    color:#20180a;
+    font-size:16px;
+    font-weight:800;
+    padding:18px;
+    border:none;
+    border-radius:16px;
+    cursor:pointer;
+    margin-bottom:10px;
+  }
+  .btn-fix-retry{
+    width:100%;
+    background:transparent;
+    color:var(--text-dim);
+    font-size:14.5px;
+    font-weight:600;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius:16px;
+    cursor:pointer;
+  }
+  .btn-fix-continue:active,.btn-fix-retry:active{transform:scale(0.98);}
+
+  /* DECISION SCREEN (Team Lead final) */
+  .decision-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:26px 22px;
+  }
+  .decision-title{
+    font-size:22px;
+    font-weight:800;
+    margin-bottom:6px;
+  }
+  .decision-sub{
+    font-size:13.5px;
+    color:var(--text-dim);
+    margin-bottom:20px;
+  }
+  .decision-flags{
+    background:rgba(232,82,77,0.1);
+    border:1px solid #5a2320;
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:20px;
+    font-size:13.5px;
+    color:#f2a29e;
+  }
+  .btn-open{
+    width:100%;
+    background:var(--green);
+    color:#062012;
+    font-size:20px;
+    font-weight:800;
+    padding:26px;
+    border:none;
+    border-radius:18px;
+    cursor:pointer;
+    margin-bottom:14px;
+  }
+  .btn-hold{
+    width:100%;
+    background:var(--red);
+    color:#2a0806;
+    font-size:20px;
+    font-weight:800;
+    padding:26px;
+    border:none;
+    border-radius:18px;
+    cursor:pointer;
+  }
+  .btn-open:active,.btn-hold:active{transform:scale(0.97);}
+
+  /* STATUS BOARD (Team Lead) */
+  .status-board{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:18px;
+  }
+  .status-board-title{
+    font-size:11px;
+    color:var(--text-dim);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:12px;
+    font-weight:700;
+  }
+  .status-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:9px 0;
+    border-bottom:1px solid var(--border);
+    font-size:14.5px;
+    font-weight:600;
+  }
+  .status-row:last-child{border-bottom:none;}
+  .status-pill{
+    font-size:11px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:20px;
+    letter-spacing:0.3px;
+  }
+  .status-pill.ready{background:rgba(63,191,104,0.15);color:var(--green);}
+  .status-pill.notready{background:rgba(154,154,163,0.15);color:var(--text-dim);}
+
+  /* FINAL DONE SCREEN */
+  .done-card{
+    text-align:center;
+    padding:40px 20px;
+  }
+  .done-emoji{font-size:56px;margin-bottom:16px;}
+  .done-title{
+    font-size:26px;
+    font-weight:800;
+    color:var(--green);
+    margin-bottom:10px;
+  }
+  .done-text{
+    font-size:15px;
+    color:var(--text-dim);
+    line-height:1.5;
+    margin-bottom:30px;
+  }
+  .done-flags-note{
+    font-size:13px;
+    color:#f2a29e;
+    margin-bottom:20px;
+  }
+  .btn-switch{
+    background:var(--panel2);
+    color:var(--text);
+    border:1px solid var(--border);
+    font-size:15px;
+    font-weight:700;
+    padding:16px 22px;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .btn-switch:active{transform:scale(0.97);}
+
+  .loading{
+    text-align:center;
+    color:var(--text-dim);
+    padding:40px 0;
+    font-size:14px;
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+(function(){
+
+// ---------- ROLE DEFINITIONS ----------
+const ROLES = {
+  security: { emoji:"🔒", name:"Security", tag:"SECURITY" },
+  door:     { emoji:"🚪", name:"Door / Check-In", tag:"DOOR / CHECK-IN" },
+  artist:   { emoji:"🎤", name:"Artist Check-In", tag:"ARTIST CHECK-IN" },
+  host:     { emoji:"🎤", name:"Host", tag:"HOST" },
+  dj:       { emoji:"🎧", name:"DJ", tag:"DJ" },
+  camera:   { emoji:"📹", name:"Camera", tag:"CAMERA" },
+  crowd:    { emoji:"👥", name:"Crowd Control", tag:"CROWD CONTROL" },
+  lead:     { emoji:"⭐", name:"Team Lead", tag:"TEAM LEAD" },
+};
+const ROLE_ORDER = ["security","door","artist","host","dj","camera","crowd","lead"];
+
+// step types: yesno, select, multicheck
+function yn(q, opts){ return Object.assign({type:"yesno", q}, opts||{}); }
+function sel(q, options, opts){ return Object.assign({type:"select", q, options}, opts||{}); }
+function multi(q, items, opts){ return Object.assign({type:"multicheck", q, items}, opts||{}); }
+
+const FLOWS = {
+
+  security: [
+    yn("Are you on-site and ready for your security assignment?", {noFix:"Notify your Team Lead now — do not start your shift until you check in."}),
+    yn("Do you know where you are supposed to be stationed?", {noFix:"Contact your Team Lead to get your position before doing anything else."}),
+    sel("Where are you stationed?", ["Main Entrance","Side/Second Entrance","Inside Crowd Area","Stage Area","Parking/Outside","Other"]),
+    yn("Do you know where the emergency exits are?", {noFix:"Find your Team Lead and get the exit locations before doors open."}),
+    yn("Can you clearly see the entrance/door you are responsible for?", {noFix:"Adjust your position so you can see your entrance before doors open."}),
+    yn("Are your entrance, hallway, and emergency paths clear?", {noFix:"Clear the area now and notify your Team Lead."}),
+    yn("Are you in position to see the crowd and respond if there is a problem?", {noFix:"Move to a better position where you can see the crowd."}),
+    yn("If there is a problem, do you know which Team Lead to contact?", {noFix:"Contact your Team Lead right now to confirm who to reach out to."}),
+    yn("Is everything ready for guests to enter?", {
+      noFix:"Something isn't ready — flag the issue.",
+      onNo: { extra: sel("What is the problem?", ["Entrance problem","Crowd problem","Security issue","Artist issue","Guest issue","Emergency","Other"]) }
+    }),
+  ],
+
+  door: [
+    yn("Are you at the correct entrance?", {noFix:"Move to the correct entrance before continuing."}),
+    multi("Do you have everything you need to check guests in?", ["Wristbands","Payment information","Guest list","Phone/tablet","Pen"]),
+    yn("Is anything missing?", {invertGood:true, noFix:"", yesFix:"Tell your Team Lead what's missing before doors open."}),
+    yn("Do you know today's entry price?", {noFix:"Confirm today's price with your Team Lead."}),
+    yn("Do you know who receives a wristband?", {noFix:"Confirm wristband rules with your Team Lead."}),
+    yn("Does the guest need payment confirmation?", {infoOnly:true}),
+    yn("Has the guest paid?", {noFix:"If the guest hasn't paid or you need help, call your Team Lead over.", options:["YES","NO","NEED HELP"]}),
+    yn("Did the guest receive the correct wristband?", {noFix:"Fix the wristband before letting the guest continue."}),
+    yn("Is your line moving?", {noFix:"Notify your Team Lead — the line is getting crowded or stopped."}),
+  ],
+
+  artist: [
+    yn("Is the artist here?", {noFix:"Notify your Team Lead that the artist has not arrived."}),
+    yn("Have you confirmed the artist's name?", {noFix:"Confirm the artist's name before continuing."}),
+    yn("Has the artist checked in?", {noFix:"Complete artist check-in before moving on."}),
+    sel("Does the artist have their music ready?", ["Phone","Flash drive","Music already provided","DJ has music","NOT READY"]),
+    multi("Has the artist provided all required songs?", ["Song 1","Song 2","Song 3"], {requireAll:true}),
+    yn("Do we have a backup copy of the music?", {noFix:"Get a backup copy of the music before the artist performs."}),
+    yn("Has the DJ confirmed that he has the music?", {noFix:"Confirm directly with the DJ that the music was received."}),
+    yn("Is the artist ready to perform?", {noFix:"Find out what's missing and notify your Team Lead."}),
+    yn("Does the artist know when they perform?", {noFix:"Tell the artist their performance order."}),
+    yn("Does the artist know where to wait?", {noFix:"Direct the artist to the correct waiting area."}),
+  ],
+
+  host: [
+    yn("Are you here and ready?", {noFix:"Let your Team Lead know you need a moment before you're ready."}),
+    yn("Do you know tonight's battle schedule?", {noFix:"Get the schedule from your Team Lead."}),
+    yn("Do you know which artist performs first?", {noFix:"Confirm the first performer with your Team Lead."}),
+    yn("Do you know who performs second?", {noFix:"Confirm the second performer with your Team Lead."}),
+    yn("Do you know who performs third?", {noFix:"Confirm the third performer with your Team Lead."}),
+    yn("Do you know what happens between battles?", {noFix:"Ask your Team Lead to walk through the between-battle routine."}),
+    yn("Do you know how the audience voting works?", {noFix:"Get the voting process from your Team Lead before you go on."}),
+    yn("Do you know how to announce the winner?", {noFix:"Confirm the winner announcement format with your Team Lead."}),
+    yn("Do you know who to contact if something changes?", {noFix:"Get the contact name from your Team Lead now."}),
+    yn("Are you ready to go on stage?", {noFix:"Tell your Team Lead what you still need before going on."}),
+  ],
+
+  dj: [
+    yn("Are you here and set up?", {noFix:"Let your Team Lead know if you need more time to set up."}),
+    yn("Do you have all artist music?", {noFix:"Check with Artist Check-In for any missing music."}),
+    yn("Do you have backup music?", {noFix:"Load backup tracks before the first battle."}),
+    yn("Have you tested your sound?", {noFix:"Run a sound check before doors open."}),
+    yn("Can you hear the microphone?", {noFix:"Fix the mic levels before doors open."}),
+    yn("Can the audience hear the music?", {noFix:"Adjust the audio before continuing."}),
+    yn("Do you know the battle order?", {noFix:"Confirm the battle order with your Team Lead."}),
+    yn("Do you know when to stop music for the host?", {noFix:"Confirm cues with the Host before the show starts."}),
+    yn("During voting, can you play short artist snippets?", {noFix:"Get the snippet clips ready before voting starts."}),
+    yn("Are you ready for the first battle?", {noFix:"Tell your Team Lead what's still needed."}),
+  ],
+
+  camera: [
+    yn("Are your camera/phone batteries charged?", {noFix:"Charge or swap batteries before recording starts."}),
+    yn("Do you have enough storage?", {noFix:"Clear space or swap cards before recording starts."}),
+    yn("Are you recording?", {noFix:"Start recording now."}),
+    yn("Can you see the stage?", {noFix:"Reposition so you have a clear shot of the stage."}),
+    yn("Can you see the audience?", {noFix:"Reposition to capture the crowd."}),
+    yn("Can you get a shot of each artist?", {noFix:"Adjust your angle to cover every artist."}),
+    yn("Are you getting crowd reactions?", {noFix:"Swing to the crowd for reaction shots."}),
+    yn("Are you getting the winner announcement?", {noFix:"Be ready at the stage for the winner announcement."}),
+    yn("Are you getting the winner interview?", {noFix:"Head to the winner for an interview shot — this was missed last time."}),
+    yn("Did you save today's footage?", {noFix:"Save the footage now before you forget."}),
+    yn("Did you send/upload the footage?", {noFix:"Send or upload the footage to your Team Lead."}),
+  ],
+
+  crowd: [
+    yn("Are you in your assigned area?", {noFix:"Move to your assigned area."}),
+    yn("Can you see the crowd?", {noFix:"Reposition so you have a clear view of the crowd."}),
+    yn("Are people standing where they should be?", {noFix:"Guide people back into place."}),
+    yn("Are entrances and exits clear?", {noFix:"Clear the entrances and exits now."}),
+    yn("Is anyone blocking the performance area?", {invertGood:true, yesFix:"Clear the performance area now."}),
+    yn("Is the crowd becoming too crowded?", {invertGood:true, yesFix:"Notify Security / Team Lead right away."}),
+    yn("Are people staying through the battles?", {noFix:"Notify your Team Lead — people are starting to leave."}),
+    yn("Is the crowd engaged?", {noFix:"Notify the Host / DJ so they can bring the energy back up."}),
+  ],
+
+  lead: [
+    yn("Is your full team here?", {noFix:"Note who is missing and get coverage before doors open.", extraOnNo: sel("Who is missing?", ["Security","Door/Check-In","Artist Check-In","Host","DJ","Camera","Crowd Control","Other"])}),
+    yn("Is Security in position?", {noFix:"Check in with Security before continuing."}),
+    yn("Is Door/Check-In ready?", {noFix:"Check in with Door/Check-In before continuing."}),
+    yn("Are all artists checked in?", {noFix:"Follow up on any missing artist check-ins."}),
+    yn("Does the DJ have all music?", {noFix:"Confirm missing tracks with the DJ."}),
+    yn("Is the host ready?", {noFix:"Check in with the Host before continuing."}),
+    yn("Is the camera person ready?", {noFix:"Check in with Camera before continuing."}),
+    yn("Is the crowd area ready?", {noFix:"Check in with Crowd Control before continuing."}),
+    yn("Are the entrances clear?", {noFix:"Have Security or Crowd Control clear the entrances."}),
+    yn("Is the stage/performance area ready?", {noFix:"Confirm the stage is set before continuing."}),
+    yn("Is there anything that could delay the start?", {invertGood:true, yesFix:"Note the issue and notify whoever is responsible.", extraOnYes: sel("What could cause the delay?", ["Entrance problem","Crowd problem","Security issue","Artist issue","Guest issue","Equipment issue","Other"])}),
+  ],
+};
+
+// ---------- STATE ----------
+let state = {
+  screen: "home",       // home | flow | decision | done
+  role: null,
+  stepIndex: 0,
+  showFix: false,
+  fixMessage: "",
+  selections: {},        // per-step answers for this role's flow
+  flags: [],              // issues flagged during this run
+  extraStep: null,        // sub-question shown after a NO/YES branch
+};
+
+let statusBoard = {}; // role -> "READY" | null, loaded from shared storage
+
+// ---------- STORAGE HELPERS ----------
+async function loadStatusBoard(){
+  const board = {};
+  for (const r of ROLE_ORDER){
+    try{
+      const res = await window.storage.get("checkin_status:" + r, true);
+      board[r] = res && res.value ? JSON.parse(res.value) : null;
+    }catch(e){
+      board[r] = null;
+    }
+  }
+  return board;
+}
+
+async function markRoleReady(role, flagCount){
+  try{
+    await window.storage.set("checkin_status:" + role, JSON.stringify({
+      status:"READY",
+      flags: flagCount,
+      at: new Date().toLocaleTimeString()
+    }), true);
+  }catch(e){ /* best effort */ }
+}
+
+// ---------- RENDER ----------
+const appEl = document.getElementById("app");
+
+function render(){
+  if (state.screen === "home") return renderHome();
+  if (state.screen === "flow") return renderFlow();
+  if (state.screen === "decision") return renderDecision();
+  if (state.screen === "done") return renderDone();
+}
+
+async function goHome(){
+  state = { screen:"home", role:null, stepIndex:0, showFix:false, fixMessage:"", selections:{}, flags:[], extraStep:null };
+  appEl.innerHTML = '<div class="loading">Loading team status…</div>';
+  statusBoard = await loadStatusBoard();
+  render();
+}
+
+function renderHome(){
+  let html = '';
+  html += '<div class="top-bar"><div class="brand"><div class="h1">HIT FOR HIT</div><div class="h2">Battle Day Team Check-In</div></div></div>';
+  html += '<div class="home-sub">Who are you?</div>';
+  html += '<div class="role-grid">';
+  ROLE_ORDER.forEach(key=>{
+    const r = ROLES[key];
+    const isLead = key === "lead";
+    const ready = statusBoard[key] && statusBoard[key].status === "READY";
+    html += `<div class="role-card ${isLead?'lead':''}" data-role="${key}">
+      <span class="role-emoji">${r.emoji}</span>
+      <span class="role-name">${r.name}</span>
+      <div><span class="role-status ${ready?'ready':''}">${ready?'✅ READY':'NOT STARTED'}</span></div>
+    </div>`;
+  });
+  html += '</div>';
+  appEl.innerHTML = html;
+  appEl.querySelectorAll('.role-card').forEach(el=>{
+    el.addEventListener('click', ()=>startFlow(el.dataset.role));
+  });
+}
+
+function startFlow(role){
+  state.screen = "flow";
+  state.role = role;
+  state.stepIndex = 0;
+  state.showFix = false;
+  state.selections = {};
+  state.flags = [];
+  state.extraStep = null;
+  render();
+}
+
+function currentSteps(){
+  return FLOWS[state.role];
+}
+
+function renderFlow(){
+  const steps = currentSteps();
+  const total = steps.length;
+  const idx = state.stepIndex;
+
+  if (idx >= total){
+    finishFlow();
+    return;
+  }
+
+  const step = state.extraStep || steps[idx];
+  const roleInfo = ROLES[state.role];
+
+  let html = '';
+  html += `<div class="top-bar"><div class="brand"><div class="h1">${roleInfo.emoji} ${roleInfo.name}</div></div>
+    <button class="home-btn" id="homeBtn">Switch Role</button></div>`;
+
+  html += `<div class="progress-wrap">
+    <div class="progress-label">Question ${idx+1} of ${total}</div>
+    <div class="progress-track"><div class="progress-fill" style="width:${Math.round(((idx)/total)*100)}%"></div></div>
+  </div>`;
+
+  html += '<div class="stage">';
+
+  if (state.showFix){
+    html += `<div class="fix-card">
+      <div class="fix-icon">⚠️</div>
+      <div class="fix-title">Action Needed</div>
+      <div class="fix-text">${state.fixMessage}</div>
+      <button class="btn-fix-continue" id="fixContinue">Got It — Continue</button>
+      <button class="btn-fix-retry" id="fixRetry">I Fixed It — Recheck This Question</button>
+    </div>`;
+  } else if (step.type === "yesno"){
+    html += `<div class="q-card">
+      <div class="q-role-tag">${roleInfo.tag}</div>
+      <div class="q-text">${step.q}</div>
+    </div>
+    <div class="yn-wrap">
+      <button class="btn-big btn-yes" id="ynYes">✅ YES</button>
+      <button class="btn-big btn-no" id="ynNo">❌ NO</button>
+    </div>`;
+  } else if (step.type === "select"){
+    html += `<div class="q-card">
+      <div class="q-role-tag">${roleInfo.tag}</div>
+      <div class="q-text">${step.q}</div>
+    </div>
+    <div class="opt-wrap">`;
+    step.options.forEach((o,i)=>{
+      html += `<button class="opt-btn" data-opt="${i}">${o}</button>`;
+    });
+    html += `</div>
+    <button class="btn-continue" id="selContinue" disabled>Continue</button>`;
+  } else if (step.type === "multicheck"){
+    html += `<div class="q-card">
+      <div class="q-role-tag">${roleInfo.tag}</div>
+      <div class="q-text">${step.q}</div>
+      <div class="q-hint">Tap each item to confirm.</div>
+    </div>
+    <div>`;
+    step.items.forEach((it,i)=>{
+      html += `<div class="check-item" data-idx="${i}">
+        <div class="check-box"></div>
+        <div class="check-label">${it}</div>
+      </div>`;
+    });
+    html += `</div>
+    <button class="btn-continue" id="multiContinue" ${step.requireAll?'disabled':''}>Continue</button>`;
+  }
+
+  html += '</div>';
+  appEl.innerHTML = html;
+
+  document.getElementById('homeBtn').addEventListener('click', goHome);
+
+  if (state.showFix){
+    document.getElementById('fixContinue').addEventListener('click', ()=>{
+      state.showFix = false;
+      advanceStep();
+    });
+    document.getElementById('fixRetry').addEventListener('click', ()=>{
+      state.showFix = false;
+      render();
+    });
+  } else if (step.type === "yesno"){
+    document.getElementById('ynYes').addEventListener('click', ()=>handleYesNo(step, true));
+    document.getElementById('ynNo').addEventListener('click', ()=>handleYesNo(step, false));
+  } else if (step.type === "select"){
+    let chosen = null;
+    const optBtns = appEl.querySelectorAll('.opt-btn');
+    const contBtn = document.getElementById('selContinue');
+    optBtns.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        optBtns.forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+        chosen = step.options[parseInt(btn.dataset.opt)];
+        contBtn.disabled = false;
+      });
+    });
+    contBtn.addEventListener('click', ()=>{
+      state.selections[step.q] = chosen;
+      advanceAfterExtra();
+    });
+  } else if (step.type === "multicheck"){
+    const items = appEl.querySelectorAll('.check-item');
+    const contBtn = document.getElementById('multiContinue');
+    const checkedSet = new Set();
+    items.forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const i = el.dataset.idx;
+        if (checkedSet.has(i)){ checkedSet.delete(i); el.classList.remove('checked'); }
+        else { checkedSet.add(i); el.classList.add('checked'); }
+        if (step.requireAll){
+          contBtn.disabled = checkedSet.size < step.items.length;
+        }
+      });
+    });
+    contBtn.addEventListener('click', ()=>{
+      state.selections[step.q] = Array.from(checkedSet).map(i=>step.items[i]);
+      advanceStep();
+    });
+  }
+}
+
+function handleYesNo(step, isYes){
+  // determine if this YES/NO is "good" (no flag) or "bad" (flag + fix message)
+  const invert = !!step.invertGood;
+  const isGood = invert ? !isYes : isYes;
+
+  if (isGood){
+    // check for extra follow-up on the good path (rare) - none currently
+    advanceStep();
+    return;
+  }
+
+  // bad path -> flag it, show fix message unless infoOnly
+  state.flags.push(state.role + ": " + step.q);
+
+  if (step.infoOnly){
+    advanceStep();
+    return;
+  }
+
+  const msg = invert ? (step.yesFix || "Notify your Team Lead.") : (step.noFix || "Notify your Team Lead.");
+  const extra = invert ? step.extraOnYes : (step.extraOnNo || (step.onNo && step.onNo.extra));
+
+  if (extra){
+    state.extraStep = extra;
+    render();
+    return;
+  }
+
+  state.fixMessage = msg;
+  state.showFix = true;
+  render();
+}
+
+function advanceAfterExtra(){
+  state.extraStep = null;
+  advanceStep();
+}
+
+function advanceStep(){
+  if (state.extraStep){
+    state.extraStep = null;
+  }
+  state.stepIndex += 1;
+  render();
+}
+
+async function finishFlow(){
+  await markRoleReady(state.role, state.flags.length);
+  statusBoard[state.role] = { status:"READY", flags: state.flags.length };
+
+  if (state.role === "lead"){
+    state.screen = "decision";
+    render();
+    return;
+  }
+
+  state.screen = "done";
+  render();
+}
+
+function renderDone(){
+  const roleInfo = ROLES[state.role];
+  let html = '<div class="stage"><div class="done-card">';
+  html += `<div class="done-emoji">✅</div>`;
+  html += `<div class="done-title">YOU'RE DONE</div>`;
+  html += `<div class="done-text">${roleInfo.emoji} ${roleInfo.name} status is now <strong style="color:var(--green)">READY</strong>.<br>Your Team Lead has been notified that your checklist is complete.</div>`;
+  if (state.flags.length){
+    html += `<div class="done-flags-note">${state.flags.length} item${state.flags.length>1?'s':''} flagged for follow-up during this check-in.</div>`;
+  }
+  html += `<button class="btn-switch" id="switchBtn">Switch Role</button>`;
+  html += '</div></div>';
+  appEl.innerHTML = html;
+  document.getElementById('switchBtn').addEventListener('click', goHome);
+}
+
+function renderDecision(){
+  let html = '<div class="stage">';
+  html += `<div class="top-bar"><div class="brand"><div class="h1">⭐ Team Lead</div></div>
+    <button class="home-btn" id="homeBtn2">Switch Role</button></div>`;
+
+  html += '<div class="status-board"><div class="status-board-title">Team Status</div>';
+  ROLE_ORDER.filter(r=>r!=="lead").forEach(key=>{
+    const r = ROLES[key];
+    const s = statusBoard[key];
+    const ready = s && s.status === "READY";
+    html += `<div class="status-row"><span>${r.emoji} ${r.name}</span>
+      <span class="status-pill ${ready?'ready':'notready'}">${ready?'✅ READY':'NOT READY'}</span></div>`;
+  });
+  html += '</div>';
+
+  html += '<div class="decision-card">';
+  html += '<div class="decision-title">Can we open the doors?</div>';
+  html += '<div class="decision-sub">This is the final call for Battle Day.</div>';
+  if (state.flags.length){
+    html += `<div class="decision-flags">⚠️ ${state.flags.length} item${state.flags.length>1?'s':''} flagged during your checklist — review before opening.</div>`;
+  }
+  html += `<button class="btn-open" id="openBtn">🟢 YES — OPEN DOORS</button>`;
+  html += `<button class="btn-hold" id="holdBtn">🔴 NO — HOLD</button>`;
+  html += '</div></div>';
+
+  appEl.innerHTML = html;
+  document.getElementById('homeBtn2').addEventListener('click', goHome);
+  document.getElementById('openBtn').addEventListener('click', ()=>finalizeDecision("OPEN"));
+  document.getElementById('holdBtn').addEventListener('click', ()=>finalizeDecision("HOLD"));
+}
+
+async function finalizeDecision(decision){
+  try{
+    await window.storage.set("checkin_status:doors", JSON.stringify({
+      status: decision, at: new Date().toLocaleTimeString()
+    }), true);
+  }catch(e){}
+
+  let html = '<div class="stage"><div class="done-card">';
+  if (decision === "OPEN"){
+    html += `<div class="done-emoji">🟢</div><div class="done-title">DOORS OPEN</div>
+      <div class="done-text">The call has been made. Team status has been saved.</div>`;
+  } else {
+    html += `<div class="done-emoji">🔴</div><div class="done-title" style="color:var(--red)">HOLD</div>
+      <div class="done-text">Doors are on hold. Resolve flagged items, then return to this checklist.</div>`;
+  }
+  html += `<button class="btn-switch" id="switchBtn2">Back to Team Check-In</button>`;
+  html += '</div></div>';
+  appEl.innerHTML = html;
+  document.getElementById('switchBtn2').addEventListener('click', goHome);
+}
+
+// ---------- INIT ----------
+goHome();
+
+})();
+</script>
+</body>
+</html>
