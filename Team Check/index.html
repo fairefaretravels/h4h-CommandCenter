@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#090909">
+
+<title>HIT FOR HIT — Team Check-In</title>
+
+<style>
+:root{
+  --bg:#080808;
+  --panel:#141414;
+  --panel2:#1d1d1d;
+  --text:#ffffff;
+  --muted:#a7a7a7;
+  --line:#303030;
+  --gold:#f4c542;
+  --green:#25c76f;
+  --red:#ef5350;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  min-height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  min-height:100vh;
+}
+
+button,
+input{
+  font:inherit;
+}
+
+.app{
+  width:100%;
+  max-width:620px;
+  min-height:100vh;
+  margin:0 auto;
+  padding:18px 16px calc(35px + env(safe-area-inset-bottom));
+}
+
+/* HEADER */
+
+header{
+  text-align:center;
+  padding:8px 0 22px;
+}
+
+.logo{
+  color:var(--gold);
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:2px;
+  margin-bottom:7px;
+}
+
+h1{
+  margin:0;
+  font-size:clamp(29px,8vw,42px);
+  line-height:1;
+  letter-spacing:-1px;
+}
+
+.subtitle{
+  color:var(--muted);
+  font-size:14px;
+  margin-top:9px;
+}
+
+/* SCREENS */
+
+.screen{
+  display:none;
+}
+
+.screen.active{
+  display:block;
+}
+
+/* CARD */
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 10px 35px rgba(0,0,0,.25);
+}
+
+/* ROLE SELECTION */
+
+.question-label{
+  color:var(--gold);
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  font-size:11px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+
+.select-title{
+  margin:0 0 8px;
+  font-size:25px;
+}
+
+.helper{
+  color:var(--muted);
+  line-height:1.5;
+  font-size:14px;
+  margin:0 0 22px;
+}
+
+.role-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.role-btn{
+  min-height:108px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--panel2);
+  color:white;
+  cursor:pointer;
+  padding:15px 10px;
+  transition:.15s ease;
+}
+
+.role-btn:active{
+  transform:scale(.98);
+}
+
+.role-icon{
+  display:block;
+  font-size:30px;
+  margin-bottom:8px;
+}
+
+.role-name{
+  display:block;
+  font-size:15px;
+  font-weight:900;
+}
+
+.role-help{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:5px;
+  line-height:1.3;
+}
+
+.notice{
+  margin-top:16px;
+  padding:14px;
+  border-radius:13px;
+  background:#101010;
+  border:1px solid var(--line);
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+
+.notice strong{
+  color:white;
+}
+
+/* CHECKLIST */
+
+.back-link{
+  display:block;
+  background:none;
+  border:0;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+  padding:0;
+  margin:0 0 16px;
+}
+
+.role-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.big-icon{
+  font-size:30px;
+}
+
+.role-title h2{
+  margin:0;
+  font-size:22px;
+}
+
+.role-title p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* PROGRESS */
+
+.progress-wrap{
+  margin-bottom:25px;
+}
+
+.progress-meta{
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:7px;
+}
+
+.progress{
+  height:8px;
+  background:#292929;
+  border-radius:99px;
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+  width:0;
+  background:var(--gold);
+  transition:width .25s ease;
+}
+
+/* QUESTIONS */
+
+.question{
+  font-size:clamp(25px,7vw,36px);
+  line-height:1.08;
+  font-weight:900;
+  letter-spacing:-.8px;
+  margin:0 0 12px;
+}
+
+.answer-grid{
+  display:grid;
+  gap:12px;
+}
+
+.answer-btn{
+  min-height:74px;
+  border:2px solid var(--line);
+  border-radius:16px;
+  background:#202020;
+  color:white;
+  font-size:18px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.answer-btn.yes{
+  border-color:#246d48;
+}
+
+.answer-btn.no{
+  border-color:#6f302f;
+}
+
+.answer-btn:active{
+  transform:scale(.99);
+}
+
+.answer-btn:disabled{
+  cursor:not-allowed;
+}
+
+/* ALERT */
+
+.alert{
+  display:none;
+  margin-top:16px;
+  padding:16px;
+  border-radius:14px;
+  background:rgba(239,83,80,.10);
+  border:1px solid rgba(239,83,80,.45);
+  font-size:14px;
+  line-height:1.5;
+}
+
+.alert.show{
+  display:block;
+}
+
+.alert strong{
+  display:block;
+  color:#ff8a87;
+  margin-bottom:6px;
+}
+
+/* ACTIONS */
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+
+.action{
+  flex:1;
+  min-height:58px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:#222;
+  color:white;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.action.primary{
+  background:var(--gold);
+  color:#080808;
+  border-color:var(--gold);
+}
+
+.action.secondary{
+  background:transparent;
+}
+
+/* COMPLETE */
+
+.ready-box{
+  text-align:center;
+  padding:25px 5px 20px;
+}
+
+.ready-check{
+  width:88px;
+  height:88px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  margin:0 auto 18px;
+  background:rgba(37,199,111,.12);
+  border:2px solid var(--green);
+  color:var(--green);
+  font-size:44px;
+}
+
+.ready-box h2{
+  font-size:30px;
+  margin:0 0 8px;
+}
+
+.ready-box p{
+  color:var(--muted);
+  line-height:1.5;
+  margin:0 auto 22px;
+  max-width:430px;
+}
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  border:1px solid rgba(37,199,111,.45);
+  color:var(--green);
+  background:rgba(37,199,111,.08);
+  padding:9px 13px;
+  border-radius:99px;
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+/* TEAM SUMMARY */
+
+.team-summary{
+  display:grid;
+  gap:10px;
+  margin:20px 0;
+}
+
+.summary-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#101010;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px;
+}
+
+.summary-role{
+  font-weight:800;
+}
+
+.summary-status{
+  font-size:11px;
+  font-weight:900;
+}
+
+.summary-status.ready{
+  color:var(--green);
+}
+
+.summary-status.not-ready{
+  color:var(--red);
+}
+
+.small{
+  text-align:center;
+  color:#777;
+  font-size:11px;
+  line-height:1.5;
+  margin-top:18px;
+}
+
+/* MOBILE */
+
+@media(max-width:420px){
+
+  .app{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .card{
+    padding:16px;
+  }
+
+  .role-grid{
+    gap:9px;
+  }
+
+  .role-btn{
+    min-height:100px;
+  }
+
+  .actions{
+    flex-direction:column;
+  }
+
+  .action{
+    width:100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="logo">HIT FOR HIT BATTLES™</div>
+  <h1>TEAM CHECK-IN</h1>
+  <div class="subtitle">Battle Day Staff Checklist</div>
+</header>
+
+
+<!-- =====================================================
+     ROLE SELECTION
+===================================================== -->
+
+<section id="roleScreen" class="screen active">
+
+  <div class="card">
+
+    <div class="question-label">
+      Step 1
+    </div>
+
+    <h2 class="select-title">
+      Who are you?
+    </h2>
+
+    <p class="helper">
+      Choose your job for tonight. You will only see the checklist for your role.
+    </p>
+
+    <div class="role-grid" id="roleGrid"></div>
+
+    <div class="notice">
+      <strong>How this works:</strong><br>
+      Answer one question at a time.
+      If something is not ready, the app will tell you what needs to happen before you continue.
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     CHECKLIST
+===================================================== -->
+
+<section id="checklistScreen" class="screen">
+
+  <button class="back-link" onclick="backToRoles()">
+    ← Change role
+  </button>
+
+  <div class="card">
+
+    <div class="role-title">
+
+      <span class="big-icon" id="roleIcon"></span>
+
+      <div>
+        <h2 id="roleName"></h2>
+        <p id="roleDescription"></p>
+      </div>
+
+    </div>
+
+
+    <div class="progress-wrap">
+
+      <div class="progress-meta">
+        <span id="progressText">
+          Question 1 of 1
+        </span>
+
+        <span id="progressPercent">
+          0%
+        </span>
+      </div>
+
+      <div class="progress">
+        <div
+          class="progress-bar"
+          id="progressBar">
+        </div>
+      </div>
+
+    </div>
+
+
+    <div id="questionArea"></div>
+
+    <div id="alert" class="alert"></div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     COMPLETE SCREEN
+===================================================== -->
+
+<section id="completeScreen" class="screen">
+
+  <div class="card">
+
+    <div class="ready-box">
+
+      <div class="ready-check">
+        ✓
+      </div>
+
+      <h2 id="completeTitle">
+        YOU'RE READY
+      </h2>
+
+      <p id="completeMessage">
+        Your checklist is complete.
+      </p>
+
+      <div class="status">
+        ● Checklist Complete
+      </div>
+
+    </div>
+
+
+    <div class="actions">
+
+      <button
+        class="action primary"
+        onclick="startAnother()">
+        Another Team Member
+      </button>
+
+      <button
+        class="action secondary"
+        onclick="restartSameRole()">
+        Redo Checklist
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     TEAM LEAD SUMMARY
+===================================================== -->
+
+<section id="leadScreen" class="screen">
+
+  <div class="card">
+
+    <div class="ready-box">
+
+      <div class="ready-check">
+        ✓
+      </div>
+
+      <h2>
+        TEAM CHECK
+      </h2>
+
+      <p>
+        This shows which team roles have completed their checklists on this device.
+      </p>
+
+    </div>
+
+    <div
+      class="team-summary"
+      id="teamSummary">
+    </div>
+
+    <div class="actions">
+
+      <button
+        class="action primary"
+        onclick="startAnother()">
+        Return to Roles
+      </button>
+
+      <button
+        class="action secondary"
+        onclick="clearStatuses()">
+        Clear Statuses
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<div class="small">
+  HIT FOR HIT BATTLES™ — TEAM CHECK-IN<br>
+  Complete your assigned checklist before doors open.
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   ROLE DATA
+========================================================= */
+
+const ROLES = {
+
+  security: {
+
+    icon:"🔒",
+
+    name:"Security",
+
+    description:
+      "Keep the entrances, exits and crowd safe.",
+
+    questions:[
+
+      {
+        q:"Are you on-site and ready for your security assignment?",
+        no:"Notify the Team Lead that you are not ready."
+      },
+
+      {
+        q:"Do you know where you are supposed to be stationed?",
+        no:"Contact the Team Lead and confirm your position."
+      },
+
+      {
+        q:"Do you know where the emergency exits are?",
+        no:"Find the Team Lead and learn the emergency exit locations before doors open."
+      },
+
+      {
+        q:"Can you clearly see the entrance or area you are responsible for?",
+        no:"Move to a position where you can clearly see your assigned area."
+      },
+
+      {
+        q:"Are the walkways and emergency paths clear?",
+        no:"Clear the area if you can safely do so. Otherwise notify the Team Lead."
+      },
+
+      {
+        q:"Are you in a position where you can see and respond to the crowd?",
+        no:"Move to a better position before doors open."
+      },
+
+      {
+        q:"Do you know who to contact if there is a problem?",
+        no:"Ask the Team Lead who to contact for security issues."
+      },
+
+      {
+        q:"Are you ready for doors to open?",
+        no:"Do not leave your position. Tell the Team Lead what is stopping you."
+      }
+
+    ]
+
+  },
+
+
+  door: {
+
+    icon:"🚪",
+
+    name:"Door / Check-In",
+
+    description:
+      "Get guests checked in without unnecessary delays.",
+
+    questions:[
+
+      {
+        q:"Are you at the correct entrance?",
+        no:"Confirm your entrance with the Team Lead."
+      },
+
+      {
+        q:"Do you have everything you need to check guests in?",
+        no:"Tell the Team Lead what is missing before the line starts."
+      },
+
+      {
+        q:"Do you know tonight's entry price?",
+        no:"Ask the Team Lead before accepting payment."
+      },
+
+      {
+        q:"Do you know who receives a wristband?",
+        no:"Ask the Team Lead before giving out wristbands."
+      },
+
+      {
+        q:"Do you know how payment confirmation is handled?",
+        no:"Ask the Team Lead. Do not guess."
+      },
+
+      {
+        q:"Are you able to keep the line moving?",
+        no:"If the line is stopped or crowded, notify the Team Lead immediately."
+      },
+
+      {
+        q:"Are the entrance and waiting area clear?",
+        no:"Clear the area if safe or notify Security/Team Lead."
+      },
+
+      {
+        q:"Are you ready for doors to open?",
+        no:"Tell the Team Lead what you still need."
+      }
+
+    ]
+
+  },
+
+
+  artist: {
+
+    icon:"🎤",
+
+    name:"Artist Check-In",
+
+    description:
+      "Make sure every artist is checked in, prepared and ready.",
+
+    questions:[
+
+      {
+        q:"Is the artist here?",
+        no:"Mark the artist as not arrived and notify the Team Lead."
+      },
+
+      {
+        q:"Have you confirmed the artist's name?",
+        no:"Confirm the artist's name before continuing."
+      },
+
+      {
+        q:"Has the artist officially checked in?",
+        no:"Complete the artist check-in before continuing."
+      },
+
+      {
+        q:"Does the artist have their music ready?",
+        no:"Get the music from the artist or notify the Team Lead."
+      },
+
+      {
+        q:"Does the artist have Song 1 ready?",
+        no:"Song 1 must be provided before the artist can be marked ready."
+      },
+
+      {
+        q:"Does the artist have Song 2 ready?",
+        no:"Song 2 must be provided before the artist can be marked ready."
+      },
+
+      {
+        q:"Does the artist have Song 3 ready?",
+        no:"Song 3 must be provided before the artist can be marked ready."
+      },
+
+      {
+        q:"Do we have a backup copy of the artist's music?",
+        no:"Create or locate a backup copy before the artist is marked ready."
+      },
+
+      {
+        q:"Has the DJ confirmed that he has the artist's music?",
+        no:"Contact the DJ and confirm the music is available."
+      },
+
+      {
+        q:"Does the artist know when they perform?",
+        no:"Tell the artist their battle/performance order."
+      },
+
+      {
+        q:"Does the artist know where to wait?",
+        no:"Show the artist their waiting area."
+      },
+
+      {
+        q:"Is the artist ready to perform?",
+        no:"Ask what is still needed and notify the Team Lead if necessary."
+      }
+
+    ]
+
+  },
+
+
+  host: {
+
+    icon:"🎙️",
+
+    name:"Host",
+
+    description:
+      "Know the show flow and keep the audience informed.",
+
+    questions:[
+
+      {
+        q:"Are you here and ready?",
+        no:"Notify the Team Lead."
+      },
+
+      {
+        q:"Do you know tonight's battle schedule?",
+        no:"Get the current schedule from the Team Lead."
+      },
+
+      {
+        q:"Do you know which artist performs first?",
+        no:"Confirm the first battle before going on stage."
+      },
+
+      {
+        q:"Do you know who performs second?",
+        no:"Confirm the second battle before going on stage."
+      },
+
+      {
+        q:"Do you know who performs third?",
+        no:"Confirm the third battle before going on stage."
+      },
+
+      {
+        q:"Do you know what happens between battles?",
+        no:"Confirm the intermission/show flow with the Team Lead."
+      },
+
+      {
+        q:"Do you know how audience voting works?",
+        no:"Ask the Team Lead to explain the voting process."
+      },
+
+      {
+        q:"Do you know how to announce the winner?",
+        no:"Confirm the winner announcement procedure."
+      },
+
+      {
+        q:"Do you know who to contact if something changes?",
+        no:"Ask the Team Lead who has final authority."
+      },
+
+      {
+        q:"Are you ready to go on stage?",
+        no:"Tell the Team Lead what you still need."
+      }
+
+    ]
+
+  },
+
+
+  dj: {
+
+    icon:"🎧",
+
+    name:"DJ",
+
+    description:
+      "Music, sound and battle flow.",
+
+    questions:[
+
+      {
+        q:"Are you here and set up?",
+        no:"Notify the Team Lead."
+      },
+
+      {
+        q:"Do you have all artist music?",
+        no:"Get any missing music before doors open."
+      },
+
+      {
+        q:"Do you have backup music?",
+        no:"Tell the Team Lead if backup music is not available."
+      },
+
+      {
+        q:"Have you tested your sound?",
+        no:"Test the sound before doors open."
+      },
+
+      {
+        q:"Can you hear the microphone?",
+        no:"Fix or report the microphone issue."
+      },
+
+      {
+        q:"Can the audience hear the music?",
+        no:"Fix or report the sound issue."
+      },
+
+      {
+        q:"Do you know the battle order?",
+        no:"Confirm the battle order with the Team Lead."
+      },
+
+      {
+        q:"Do you know when to stop music for the host?",
+        no:"Confirm the show cues with the Host/Team Lead."
+      },
+
+      {
+        q:"During voting, can you play short artist snippets?",
+        no:"Confirm how voting snippets will be handled."
+      },
+
+      {
+        q:"Are you ready for the first battle?",
+        no:"Tell the Team Lead what is stopping you."
+      }
+
+    ]
+
+  },
+
+
+  camera: {
+
+    icon:"📹",
+
+    name:"Camera",
+
+    description:
+      "Capture the battles, crowd and important moments.",
+
+    questions:[
+
+      {
+        q:"Are your camera or phone batteries charged?",
+        no:"Charge or get a backup battery before filming."
+      },
+
+      {
+        q:"Do you have enough storage for the event?",
+        no:"Free up storage or get another recording device."
+      },
+
+      {
+        q:"Are you recording properly?",
+        no:"Test the recording before doors open."
+      },
+
+      {
+        q:"Can you clearly see the stage?",
+        no:"Move to a better filming position."
+      },
+
+      {
+        q:"Can you get a clear view of the audience?",
+        no:"Find a safe position for crowd shots."
+      },
+
+      {
+        q:"Can you get footage of every artist?",
+        no:"Confirm your position allows you to capture every battle."
+      },
+
+      {
+        q:"Are you getting crowd reactions?",
+        no:"Remember to capture audience reactions during the show."
+      },
+
+      {
+        q:"Are you getting the winner announcement?",
+        no:"Be ready for the winner announcement."
+      },
+
+      {
+        q:"Will you capture the winner interview?",
+        no:"Be ready to record the winner interview immediately after the battle."
+      },
+
+      {
+        q:"Are you ready to capture the event?",
+        no:"Tell the Team Lead what you need."
+      }
+
+    ]
+
+  },
+
+
+  crowd: {
+
+    icon:"👥",
+
+    name:"Crowd Control",
+
+    description:
+      "Keep the audience area organized, safe and engaged.",
+
+    questions:[
+
+      {
+        q:"Are you in your assigned area?",
+        no:"Confirm your position with the Team Lead."
+      },
+
+      {
+        q:"Can you clearly see the crowd?",
+        no:"Move to a better position."
+      },
+
+      {
+        q:"Are people standing where they should be?",
+        no:"Help guide guests to the correct area."
+      },
+
+      {
+        q:"Are entrances and exits clear?",
+        no:"Clear the area if safe or notify Security."
+      },
+
+      {
+        q:"Is anyone blocking the performance area?",
+        no:"Ask guests to move or notify Security."
+      },
+
+      {
+        q:"Is the crowd becoming too crowded?",
+        no:"Notify Security and the Team Lead."
+      },
+
+      {
+        q:"Are people staying through the battles?",
+        no:"Notify the Team Lead if guests begin leaving in large numbers."
+      },
+
+      {
+        q:"Is the crowd engaged?",
+        no:"Notify the Host or DJ if the crowd needs more engagement."
+      },
+
+      {
+        q:"Are you ready for the show to begin?",
+        no:"Tell the Team Lead what is stopping you."
+      }
+
+    ]
+
+  },
+
+
+  lead: {
+
+    icon:"⭐",
+
+    name:"Team Lead",
+
+    description:
+      "Final operational check before the event moves forward.",
+
+    questions:[
+
+      {
+        q:"Is your full team here?",
+        no:"Identify who is missing and notify the appropriate person."
+      },
+
+      {
+        q:"Is Security in position?",
+        no:"Do not open doors until Security is positioned."
+      },
+
+      {
+        q:"Is Door / Check-In ready?",
+        no:"Resolve the entrance issue before opening doors."
+      },
+
+      {
+        q:"Are all artists checked in?",
+        no:"Find the missing artist and resolve the issue."
+      },
+
+      {
+        q:"Does the DJ have all artist music?",
+        no:"Resolve missing music before the first battle."
+      },
+
+      {
+        q:"Is the Host ready?",
+        no:"Contact the Host and resolve the issue."
+      },
+
+      {
+        q:"Is the Camera person ready?",
+        no:"Contact the Camera person and resolve the issue."
+      },
+
+      {
+        q:"Is Crowd Control ready?",
+        no:"Position Crowd Control before opening doors."
+      },
+
+      {
+        q:"Are the entrances and exits clear?",
+        no:"Fix the problem before opening doors."
+      },
+
+      {
+        q:"Is the stage/performance area ready?",
+        no:"Fix the performance area before the show."
+      },
+
+      {
+        q:"Is there anything that could delay the start?",
+        no:"If there is a possible delay, identify it and assign someone to fix it."
+      },
+
+      {
+        q:"CAN WE OPEN THE DOORS?",
+        no:"HOLD THE DOORS. Resolve the outstanding issue before opening."
+      }
+
+    ]
+
+  }
+
+};
+
+
+/* =========================================================
+   APP STATE
+========================================================= */
+
+let currentRole = null;
+let currentIndex = 0;
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const roleScreen =
+  document.getElementById("roleScreen");
+
+const checklistScreen =
+  document.getElementById("checklistScreen");
+
+const completeScreen =
+  document.getElementById("completeScreen");
+
+const leadScreen =
+  document.getElementById("leadScreen");
+
+
+/* =========================================================
+   SCREEN CONTROL
+========================================================= */
+
+function showOnly(screen){
+
+  [
+    roleScreen,
+    checklistScreen,
+    completeScreen,
+    leadScreen
+  ].forEach(function(screenElement){
+
+    screenElement.classList.remove("active");
+
+  });
+
+  screen.classList.add("active");
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* =========================================================
+   ROLE BUTTONS
+========================================================= */
+
+function buildRoleButtons(){
+
+  const grid =
+    document.getElementById("roleGrid");
+
+  grid.innerHTML =
+    Object.entries(ROLES)
+    .map(function(entry){
+
+      const key = entry[0];
+      const role = entry[1];
+
+      return `
+        <button
+          class="role-btn"
+          onclick="startRole('${key}')">
+
+          <span class="role-icon">
+            ${role.icon}
+          </span>
+
+          <span class="role-name">
+            ${role.name}
+          </span>
+
+          <span class="role-help">
+            ${role.description}
+          </span>
+
+        </button>
+      `;
+
+    })
+    .join("");
+
+}
+
+
+/* =========================================================
+   START ROLE
+========================================================= */
+
+function startRole(roleKey){
+
+  currentRole = roleKey;
+
+  currentIndex = 0;
+
+  const role =
+    ROLES[roleKey];
+
+  document.getElementById("roleIcon")
+    .textContent = role.icon;
+
+  document.getElementById("roleName")
+    .textContent = role.name;
+
+  document.getElementById("roleDescription")
+    .textContent = role.description;
+
+  showOnly(checklistScreen);
+
+  renderQuestion();
+
+}
+
+
+/* =========================================================
+   RENDER QUESTION
+========================================================= */
+
+function renderQuestion(){
+
+  const role =
+    ROLES[currentRole];
+
+  const item =
+    role.questions[currentIndex];
+
+  const total =
+    role.questions.length;
+
+  const number =
+    currentIndex + 1;
+
+  const percent =
+    Math.round(
+      ((currentIndex) / total) * 100
+    );
+
+
+  document.getElementById("progressText")
+    .textContent =
+      `Question ${number} of ${total}`;
+
+  document.getElementById("progressPercent")
+    .textContent =
+      `${percent}%`;
+
+  document.getElementById("progressBar")
+    .style.width =
+      `${percent}%`;
+
+  document.getElementById("alert")
+    .classList.remove("show");
+
+
+  document.getElementById("questionArea")
+    .innerHTML = `
+
+      <div class="question-label">
+        Question ${number}
+      </div>
+
+      <h2 class="question">
+        ${item.q}
+      </h2>
+
+      <p class="helper">
+        Choose the answer that is true right now.
+      </p>
+
+      <div class="answer-grid">
+
+        <button
+          class="answer-btn yes"
+          onclick="answerYes()">
+
+          ✓ YES — I'M READY
+
+        </button>
+
+        <button
+          class="answer-btn no"
+          onclick="answerNo()">
+
+          ✕ NO — I NEED HELP
+
+        </button>
+
+      </div>
+    `;
+
+}
+
+
+/* =========================================================
+   YES
+========================================================= */
+
+function answerYes(){
+
+  nextQuestion();
+
+}
+
+
+/* =========================================================
+   NO
+========================================================= */
+
+function answerNo(){
+
+  const item =
+    ROLES[currentRole]
+      .questions[currentIndex];
+
+  const alert =
+    document.getElementById("alert");
+
+
+  alert.innerHTML = `
+
+    <strong>
+      STOP — FIX THIS FIRST
+    </strong>
+
+    ${item.no}
+
+  `;
+
+  alert.classList.add("show");
+
+
+  const buttons =
+    document.querySelectorAll(".answer-btn");
+
+  buttons.forEach(function(button){
+
+    button.disabled = true;
+
+    button.style.opacity = ".45";
+
+  });
+
+
+  document.getElementById("questionArea")
+    .insertAdjacentHTML(
+      "beforeend",
+      `
+
+      <div class="actions">
+
+        <button
+          class="action primary"
+          onclick="retryQuestion()">
+
+          I've Fixed It — Continue
+
+        </button>
+
+      </div>
+
+      `
+    );
+
+}
+
+
+/* =========================================================
+   RETRY
+========================================================= */
+
+function retryQuestion(){
+
+  document.getElementById("alert")
+    .classList.remove("show");
+
+  renderQuestion();
+
+}
+
+
+/* =========================================================
+   NEXT
+========================================================= */
+
+function nextQuestion(){
+
+  const total =
+    ROLES[currentRole]
+      .questions.length;
+
+
+  if(currentIndex >= total - 1){
+
+    completeRole();
+
+    return;
+
+  }
+
+
+  currentIndex++;
+
+  renderQuestion();
+
+}
+
+
+/* =========================================================
+   COMPLETE
+========================================================= */
+
+function completeRole(){
+
+  try{
+
+    localStorage.setItem(
+
+      "h4h_team_status_" + currentRole,
+
+      JSON.stringify({
+
+        role:
+          ROLES[currentRole].name,
+
+        completed:true,
+
+        completedAt:
+          new Date().toISOString()
+
+      })
+
+    );
+
+  }catch(error){
+
+    console.log(
+      "Local storage unavailable."
+    );
+
+  }
+
+
+  if(currentRole === "lead"){
+
+    renderLeadSummary();
+
+    showOnly(leadScreen);
+
+    return;
+
+  }
+
+
+  document.getElementById("completeTitle")
+    .textContent =
+      ROLES[currentRole]
+      .name
+      .toUpperCase() +
+      " READY";
+
+
+  document.getElementById("completeMessage")
+    .textContent =
+      "Your checklist is complete. Stay in your assigned position and report any problem to the Team Lead immediately.";
+
+
+  document.getElementById("progressBar")
+    .style.width = "100%";
+
+
+  document.getElementById("progressPercent")
+    .textContent = "100%";
+
+
+  showOnly(completeScreen);
+
+}
+
+
+/* =========================================================
+   TEAM LEAD SUMMARY
+========================================================= */
+
+function renderLeadSummary(){
+
+  const container =
+    document.getElementById("teamSummary");
+
+
+  container.innerHTML =
+
+    Object.entries(ROLES)
+
+    .filter(function(entry){
+
+      return entry[0] !== "lead";
+
+    })
+
+    .map(function(entry){
+
+      const key = entry[0];
+      const role = entry[1];
+
+      let status = null;
+
+
+      try{
+
+        status =
+          JSON.parse(
+            localStorage.getItem(
+              "h4h_team_status_" + key
+            )
+          );
+
+      }catch(error){}
+
+
+      const ready =
+        status &&
+        status.completed;
+
+
+      return `
+
+        <div class="summary-row">
+
+          <span class="summary-role">
+
+            ${role.icon}
+            ${role.name}
+
+          </span>
+
+          <span
+            class="summary-status
+            ${ready ? "ready" : "not-ready"}">
+
+            ${ready
+              ? "✓ READY"
+              : "NOT COMPLETE"}
+
+          </span>
+
+        </div>
+
+      `;
+
+    })
+
+    .join("");
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function backToRoles(){
+
+  currentRole = null;
+
+  currentIndex = 0;
+
+  showOnly(roleScreen);
+
+}
+
+
+function startAnother(){
+
+  backToRoles();
+
+}
+
+
+function restartSameRole(){
+
+  if(currentRole){
+
+    startRole(currentRole);
+
+  }else{
+
+    backToRoles();
+
+  }
+
+}
+
+
+/* =========================================================
+   CLEAR TEAM STATUSES
+========================================================= */
+
+function clearStatuses(){
+
+  Object.keys(ROLES)
+    .forEach(function(key){
+
+      try{
+
+        localStorage.removeItem(
+          "h4h_team_status_" + key
+        );
+
+      }catch(error){}
+
+    });
+
+
+  renderLeadSummary();
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+buildRoleButtons();
+
+</script>
+
+</body>
+</html>
