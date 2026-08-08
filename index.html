@@ -217,8 +217,8 @@ body::before{
         <span class="cursor"></span>
       </div>
       <div class="counter" id="counter">
-        WINNER 1 OF 3
-      </div>
+  BATTLE 2 — WINNER 1 OF 3
+</div>
     </div>
    <div class="buttons" id="buttons">
 
@@ -267,6 +267,8 @@ const winners = [
 ];
 const typed = document.getElementById("typed");
 const counter = document.getElementById("counter");
+
+const currentRound = "BATTLE 2";
 const buttons = document.getElementById("buttons");
 let winnerIndex = 0;
 let charIndex = 0;
@@ -286,10 +288,13 @@ function typeWinner(){
         charIndex = 0;
         typed.textContent = "";
         counter.textContent =
-          "WINNER " + (winnerIndex + 1) + " OF " + winners.length;
+  "BATTLE " + currentRound +
+  " — WINNER " + (winnerIndex + 1) +
+  " OF " + winners.length;
         setTimeout(typeWinner, pauseBetweenWinners);
       }else{
-        counter.textContent = "ALL QUALIFIERS ADVANCE";
+        counter.textContent =
+  "BATTLE " + currentRound + " — ALL QUALIFIERS ADVANCE";
         buttons.classList.add("show");
       }
     }, pauseAfterName);
