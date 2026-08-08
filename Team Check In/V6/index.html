@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Build Your Workflow</title>
+<style>
+  :root{
+    --bg:#0c0c0f;
+    --panel:#17171c;
+    --panel2:#1f1f26;
+    --panel3:#26262e;
+    --gold:#E8B94D;
+    --gold-dim:#8a6d2e;
+    --red:#e8524d;
+    --green:#3fbf68;
+    --blue:#5b9bd5;
+    --text:#f4f2ea;
+    --text-dim:#9a9aa3;
+    --border:#2b2b33;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-tap-highlight-color:transparent;}
+  #app{max-width:520px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:20px 18px 44px;}
+
+  .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .brand{display:flex;flex-direction:column;line-height:1.15;}
+  .brand .h1{font-size:20px;font-weight:800;letter-spacing:0.3px;color:var(--gold);}
+  .brand .h2{font-size:11.5px;color:var(--text-dim);letter-spacing:1.3px;text-transform:uppercase;margin-top:2px;}
+  .back-btn, .home-btn{background:var(--panel2);border:1px solid var(--border);color:var(--text-dim);
+    font-size:13px;padding:8px 12px;border-radius:10px;cursor:pointer;}
+  .back-btn:active, .home-btn:active{transform:scale(0.96);}
+
+  .stage{flex:1;display:flex;flex-direction:column;}
+
+  /* LANDING */
+  .landing-hero{text-align:center;padding:36px 0 24px;}
+  .landing-kicker{font-size:11.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px;}
+  .landing-title{font-size:30px;font-weight:800;line-height:1.25;margin-bottom:14px;}
+  .landing-sub{font-size:14.5px;color:var(--text-dim);line-height:1.5;margin-bottom:30px;}
+  .big-choice{display:flex;flex-direction:column;gap:14px;}
+  .choice-btn{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:24px 20px;
+    text-align:left;cursor:pointer;display:flex;align-items:center;gap:16px;}
+  .choice-btn:active{transform:scale(0.98);}
+  .choice-btn .em{font-size:30px;}
+  .choice-btn .ctitle{font-size:16.5px;font-weight:800;}
+  .choice-btn .csub{font-size:12.5px;color:var(--text-dim);margin-top:3px;}
+  .choice-btn.primary{border-color:var(--gold-dim);background:linear-gradient(135deg,#241c0d,#1a1a1f);}
+
+  /* PROGRESS */
+  .progress-wrap{margin:4px 0 22px;}
+  .progress-label{font-size:12px;color:var(--text-dim);margin-bottom:8px;letter-spacing:0.4px;}
+  .progress-track{height:7px;background:var(--panel2);border-radius:6px;overflow:hidden;}
+  .progress-fill{height:100%;background:var(--gold);border-radius:6px;transition:width .25s ease;}
+
+  /* STEP CARD */
+  .step-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:24px 22px;margin-bottom:18px;}
+  .step-label{font-size:11px;color:var(--gold);letter-spacing:1.3px;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+  .step-q{font-size:20px;font-weight:800;line-height:1.35;margin-bottom:6px;}
+  .step-hint{font-size:13px;color:var(--text-dim);}
+
+  input[type=text], input[type=tel], input[type=email]{
+    width:100%;background:var(--panel2);border:1px solid var(--border);color:var(--text);
+    font-size:16px;padding:16px 14px;border-radius:14px;margin-top:14px;outline:none;
+  }
+  input:focus{border-color:var(--gold);}
+
+  /* CATEGORY GRID */
+  .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .cat-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px 10px;
+    text-align:center;cursor:pointer;}
+  .cat-card:active{transform:scale(0.96);}
+  .cat-card.selected{border-color:var(--gold);background:rgba(232,185,77,0.08);}
+  .cat-em{font-size:30px;display:block;margin-bottom:8px;}
+  .cat-name{font-size:13.5px;font-weight:700;}
+
+  /* EMOJI/LOGO PICKER */
+  .logo-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:14px;}
+  .logo-opt{background:var(--panel2);border:1px solid var(--border);border-radius:12px;
+    font-size:22px;padding:12px 0;text-align:center;cursor:pointer;}
+  .logo-opt.selected{border-color:var(--gold);background:rgba(232,185,77,0.12);}
+
+  /* LIST BUILDER (team, tasks, requirements) */
+  .list-items{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
+  .list-item{background:var(--panel2);border:1px solid var(--border);border-radius:14px;
+    padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .list-item .liname{font-size:15px;font-weight:700;}
+  .list-item .lisub{font-size:12px;color:var(--text-dim);margin-top:3px;}
+  .li-remove{background:transparent;border:none;color:var(--red);font-size:18px;cursor:pointer;padding:4px 8px;}
+  .add-row{display:flex;gap:8px;margin-top:14px;}
+  .add-row input{margin-top:0;flex:1;}
+  .btn-add{background:var(--gold);color:#20180a;border:none;border-radius:12px;
+    padding:0 18px;font-weight:800;font-size:14px;cursor:pointer;}
+  .btn-add:active{transform:scale(0.96);}
+  .sub-add-link{font-size:13px;color:var(--gold-soft,var(--gold));cursor:pointer;margin-top:8px;display:inline-block;font-weight:700;}
+  .req-tag{font-size:11px;background:var(--panel3);border-radius:20px;padding:3px 9px;color:var(--text-dim);display:inline-block;margin:4px 6px 0 0;}
+
+  .empty-note{font-size:13px;color:var(--text-dim);margin-top:14px;font-style:italic;}
+
+  /* NAV BUTTONS */
+  .nav-row{display:flex;gap:10px;margin-top:6px;}
+  .btn-continue{flex:1;background:var(--gold);color:#20180a;font-size:16.5px;font-weight:800;
+    padding:18px;border:none;border-radius:16px;cursor:pointer;}
+  .btn-continue:disabled{background:var(--panel2);color:var(--text-dim);cursor:not-allowed;}
+  .btn-continue:active:not(:disabled){transform:scale(0.98);}
+  .btn-skip{background:transparent;color:var(--text-dim);border:1px solid var(--border);
+    font-size:14px;font-weight:700;padding:18px 20px;border-radius:16px;cursor:pointer;}
+  .btn-skip:active{transform:scale(0.98);}
+
+  /* REVIEW */
+  .review-block{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:12px;}
+  .review-label{font-size:11px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+  .review-val{font-size:15px;font-weight:700;}
+  .review-list{font-size:13.5px;color:var(--text-dim);margin-top:4px;line-height:1.6;}
+
+  /* CREATED SCREEN */
+  .created-card{text-align:center;padding:30px 10px;}
+  .created-emoji{font-size:52px;margin-bottom:14px;}
+  .created-title{font-size:24px;font-weight:800;color:var(--green);margin-bottom:10px;}
+  .created-text{font-size:14.5px;color:var(--text-dim);line-height:1.55;margin-bottom:22px;}
+  .code-box{background:var(--panel);border:2px dashed var(--gold);border-radius:16px;
+    padding:20px;font-size:32px;font-weight:800;letter-spacing:6px;color:var(--gold);margin-bottom:20px;}
+  .code-label{font-size:11px;color:var(--text-dim);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
+
+  /* WHO ARE YOU (member picker) */
+  .member-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .member-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;
+    padding:22px 10px;text-align:center;cursor:pointer;}
+  .member-card:active{transform:scale(0.96);}
+  .member-avatar{width:48px;height:48px;border-radius:50%;background:var(--panel3);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;
+    margin:0 auto 10px;color:var(--gold);}
+  .member-name{font-size:13.5px;font-weight:700;}
+
+  /* BOARD */
+  .board-header{background:var(--panel);border:1px solid var(--border);border-radius:16px;
+    padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+  .board-logo{font-size:26px;}
+  .board-biz{font-size:15px;font-weight:800;}
+  .board-who{font-size:12px;color:var(--text-dim);margin-top:2px;}
+
+  .section-title{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);
+    font-weight:700;margin:20px 0 10px;}
+  .section-title:first-child{margin-top:0;}
+
+  .task-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;
+    padding:16px 18px;margin-bottom:10px;cursor:pointer;}
+  .task-card:active{transform:scale(0.985);}
+  .task-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .task-name{font-size:15.5px;font-weight:700;}
+  .task-status{font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:20px;letter-spacing:0.3px;flex-shrink:0;}
+  .task-status.unassigned{background:rgba(154,154,163,0.15);color:var(--text-dim);}
+  .task-status.assigned{background:rgba(91,155,213,0.15);color:var(--blue);}
+  .task-status.mine{background:rgba(232,185,77,0.15);color:var(--gold);}
+  .task-status.done{background:rgba(63,191,104,0.15);color:var(--green);}
+  .task-meta{font-size:12.5px;color:var(--text-dim);margin-top:6px;}
+
+  .empty-board{text-align:center;padding:30px 0;color:var(--text-dim);font-size:13.5px;}
+
+  /* TASK DETAIL */
+  .detail-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:24px 22px;margin-bottom:18px;}
+  .detail-status-row{margin-top:14px;}
+  .req-item{display:flex;align-items:center;gap:12px;background:var(--panel2);border:1px solid var(--border);
+    border-radius:14px;padding:15px 16px;margin-bottom:10px;cursor:pointer;}
+  .req-box{width:24px;height:24px;border-radius:7px;border:2px solid var(--gold-dim);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--bg);}
+  .req-item.checked .req-box{background:var(--gold);border-color:var(--gold);}
+  .req-item.checked{border-color:var(--gold);}
+  .req-label{font-size:14.5px;font-weight:600;}
+
+  .btn-action{width:100%;font-size:16px;font-weight:800;padding:18px;border:none;border-radius:16px;
+    cursor:pointer;margin-bottom:10px;}
+  .btn-claim{background:var(--gold);color:#20180a;}
+  .btn-complete{background:var(--green);color:#062012;}
+  .btn-complete:disabled{background:var(--panel2);color:var(--text-dim);cursor:not-allowed;}
+  .btn-release{background:transparent;color:var(--text-dim);border:1px solid var(--border);}
+  .btn-action:active:not(:disabled){transform:scale(0.98);}
+
+  .loading{text-align:center;color:var(--text-dim);padding:50px 0;font-size:14px;}
+  .error-note{background:rgba(232,82,77,0.1);border:1px solid #5a2320;border-radius:14px;
+    padding:14px 16px;font-size:13.5px;color:#f2a29e;margin-bottom:16px;}
+
+  footer.tag{text-align:center;font-size:11px;color:#5c5c66;margin-top:auto;padding-top:30px;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+(function(){
+
+const CATEGORIES = [
+  {key:"events", em:"🎤", name:"Events"},
+  {key:"catering", em:"🍽️", name:"Catering"},
+  {key:"beauty", em:"💇🏽", name:"Beauty"},
+  {key:"gardening", em:"🌱", name:"Gardening"},
+  {key:"homeorg", em:"📦", name:"Home Organization"},
+  {key:"homecare", em:"🏠", name:"Home Care"},
+  {key:"custom", em:"✨", name:"Something Else"},
+];
+
+const LOGO_OPTIONS = ["🎤","🍽️","💇🏽","🌱","📦","🏠","🎧","📹","🚐","🧼","🛠️","💼","🐾","🎨","🧾","✨","⭐","🔥"];
+
+function uid(prefix){ return prefix + "_" + Math.random().toString(36).slice(2,9); }
+function genCode(){
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let c = "";
+  for(let i=0;i<4;i++) c += chars[Math.floor(Math.random()*chars.length)];
+  return c;
+}
+function initials(name){
+  return name.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+}
+
+let state = { screen:"landing" };
+const appEl = document.getElementById("app");
+
+function freshDraft(){
+  return {
+    category:null, categoryLabel:null,
+    businessName:"", logo:"✨",
+    team:[], tasks:[], contact:{phone:"",email:""},
+  };
+}
+
+function goLanding(){
+  state = { screen:"landing" };
+  render();
+}
+
+function render(){
+  const r = {
+    landing: renderLanding,
+    setupCategory: renderSetupCategory,
+    setupName: renderSetupName,
+    setupTeam: renderSetupTeam,
+    setupTasks: renderSetupTasks,
+    setupContact: renderSetupContact,
+    setupReview: renderSetupReview,
+    created: renderCreated,
+    join: renderJoin,
+    who: renderWho,
+    board: renderBoard,
+    detail: renderDetail,
+  }[state.screen];
+  if (r) r();
+}
+
+/* ---------------- LANDING ---------------- */
+function renderLanding(){
+  let html = '';
+  html += '<div class="top-bar"><div class="brand"><div class="h1">BUILD YOUR WORKFLOW</div><div class="h2">One System. Any Team.</div></div></div>';
+  html += `<div class="stage">
+    <div class="landing-hero">
+      <div class="landing-kicker">What Are You Organizing?</div>
+      <div class="landing-title">One simple system that adapts to your business, team, or project.</div>
+      <div class="landing-sub">What do I need to do? Who has it? Is it done? If not, can I take it?</div>
+    </div>
+    <div class="big-choice">
+      <div class="choice-btn primary" id="startCreate">
+        <span class="em">🛠️</span>
+        <div><div class="ctitle">Create Your Workflow</div><div class="csub">Set up your team, tasks, and requirements in a few steps</div></div>
+      </div>
+      <div class="choice-btn" id="startJoin">
+        <span class="em">🔑</span>
+        <div><div class="ctitle">Join With a Code</div><div class="csub">Enter the code your team lead shared with you</div></div>
+      </div>
+    </div>
+    <footer class="tag">Case study: this engine runs HIT FOR HIT battle-day operations.</footer>
+  </div>`;
+  appEl.innerHTML = html;
+  document.getElementById('startCreate').addEventListener('click', ()=>{
+    state = { screen:"setupCategory", draft: freshDraft() };
+    render();
+  });
+  document.getElementById('startJoin').addEventListener('click', ()=>{
+    state = { screen:"join", joinCode:"", joinError:null };
+    render();
+  });
+}
+
+/* ---------------- SETUP WIZARD ---------------- */
+const WIZARD_STEPS = ["setupCategory","setupName","setupTeam","setupTasks","setupContact","setupReview"];
+function stepIndex(){ return WIZARD_STEPS.indexOf(state.screen); }
+function stepHeader(title){
+  const idx = stepIndex();
+  return `<div class="top-bar">
+    <div class="brand"><div class="h1">${title}</div></div>
+    <button class="back-btn" id="backBtn">Cancel</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Step ${idx+1} of ${WIZARD_STEPS.length}</div>
+    <div class="progress-track"><div class="progress-fill" style="width:${Math.round((idx/(WIZARD_STEPS.length-1))*100)}%"></div></div>
+  </div>`;
+}
+function bindCancel(){
+  document.getElementById('backBtn').addEventListener('click', goLanding);
+}
+
+function renderSetupCategory(){
+  const d = state.draft;
+  let html = stepHeader("Create Your Workflow");
+  html += '<div class="stage"><div class="step-card">';
+  html += '<div class="step-label">Step 1</div><div class="step-q">What do you do?</div><div class="step-hint">Pick the closest match — you can customize everything after.</div>';
+  html += '</div><div class="cat-grid">';
+  CATEGORIES.forEach(c=>{
+    const sel = d.category === c.key ? 'selected' : '';
+    html += `<div class="cat-card ${sel}" data-key="${c.key}"><span class="cat-em">${c.em}</span><div class="cat-name">${c.name}</div></div>`;
+  });
+  html += '</div>';
+  html += `<div class="nav-row" style="margin-top:20px;"><button class="btn-continue" id="contBtn" ${d.category?'':'disabled'}>Continue</button></div>`;
+  html += '</div>';
+  appEl.innerHTML = html;
+  bindCancel();
+  appEl.querySelectorAll('.cat-card').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      d.category = el.dataset.key;
+      d.categoryLabel = CATEGORIES.find(c=>c.key===d.category).name;
+      render();
+    });
+  });
+  document.getElementById('contBtn').addEventListener('click', ()=>{
+    if(!d.category) return;
+    state.screen = "setupName";
+    render();
+  });
+}
+
+function renderSetupName(){
+  const d = state.draft;
+  let html = stepHeader("Create Your Workflow");
+  html += '<div class="stage"><div class="step-card">';
+  html += '<div class="step-label">Step 2</div><div class="step-q">What\'s your business name?</div>';
+  html += `<input type="text" id="bizName" placeholder="e.g. Mack Magic Mobile Bar" value="${escapeHtml(d.businessName)}">`;
+  html += '<div class="step-hint" style="margin-top:18px;">Pick a logo icon</div>';
+  html += '<div class="logo-grid">';
+  LOGO_OPTIONS.forEach(l=>{
+    html += `<div class="logo-opt ${d.logo===l?'selected':''}" data-l="${l}">${l}</div>`;
+  });
+  html += '</div></div>';
+  html += `<div class="nav-row"><button class="btn-continue" id="contBtn" ${d.businessName.trim()?'':'disabled'}>Continue</button></div>`;
+  html += '</div>';
+  appEl.innerHTML = html;
+  bindCancel();
+  const nameInput = document.getElementById('bizName');
+  const contBtn = document.getElementById('contBtn');
+  nameInput.addEventListener('input', ()=>{
+    d.businessName = nameInput.value;
+    contBtn.disabled = !d.businessName.trim();
+  });
+  appEl.querySelectorAll('.logo-opt').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      d.logo = el.dataset.l;
+      render();
+    });
+  });
+  contBtn.addEventListener('click', ()=>{
+    if(!d.businessName.trim()) return;
+    state.screen = "setupTeam";
+    render();
+  });
+}
+
+function renderSetupTeam(){
+  const d = state.draft;
+  let html = stepHeader("Create Your Workflow");
+  html += '<div class="stage"><div class="step-card">';
+  html += '<div class="step-label">Step 3</div><div class="step-q">Who works with you?</div><div class="step-hint">Add each team member by name.</div>';
+  html += '<div class="add-row"><input type="text" id="memberInput" placeholder="Team member name"><button class="btn-add" id="addMemberBtn">Add</button></div>';
+  html += '</div>';
+  if (d.team.length){
+    html += '<div class="list-items">';
+    d.team.forEach(m=>{
+      html += `<div class="list-item"><div><div class="liname">${escapeHtml(m.name)}</div></div><button class="li-remove" data-id="${m.id}">✕</button></div>`;
+    });
+    html += '</div>';
+  } else {
+    html += '<div class="empty-note">No team members yet — add at least one to continue.</div>';
+  }
+  html += `<div class="nav-row" style="margin-top:20px;"><button class="btn-continue" id="contBtn" ${d.team.length?'':'disabled'}>Continue</button></div>`;
+  html += '</div>';
+  appEl.innerHTML = html;
+  bindCancel();
+  const input = document.getElementById('memberInput');
+  function addMember(){
+    const v = input.value.trim();
+    if(!v) return;
+    d.team.push({id:uid('mem'), name:v});
+    input.value = "";
+    render();
+  }
+  document.getElementById('addMemberBtn').addEventListener('click', addMember);
+  input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); addMember(); } });
+  appEl.querySelectorAll('.li-remove').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      d.team = d.team.filter(m=>m.id!==el.dataset.id);
+      render();
+    });
+  });
+  document.getElementById('contBtn').addEventListener('click', ()=>{
+    if(!d.team.length) return;
+    state.screen = "setupTasks";
+    state.taskDraftReqs = [];
+    render();
+  });
+}
+
+function renderSetupTasks(){
+  const d = state.draft;
+  if (state.taskDraftReqs === undefined) state.taskDraftReqs = [];
+  let html = stepHeader("Create Your Workflow");
+  html += '<div class="stage"><div class="step-card">';
+  html += '<div class="step-label">Step 4</div><div class="step-q">What services or tasks do you perform?</div><div class="step-hint">Add each task, plus what must be checked before it counts as done.</div>';
+  html += '<div class="add-row"><input type="text" id="taskInput" placeholder="Task or service name"></div>';
+  html += `<div style="margin-top:12px;"><div class="step-hint">Requirements for this task (optional)</div>`;
+  html += `<div class="add-row"><input type="text" id="reqInput" placeholder="e.g. Photo of setup"><button class="btn-add" id="addReqBtn">Add</button></div>`;
+  if (state.taskDraftReqs.length){
+    html += '<div style="margin-top:10px;">';
+    state.taskDraftReqs.forEach((r,i)=>{
+      html += `<span class="req-tag">${escapeHtml(r)} <span data-ri="${i}" style="cursor:pointer;color:var(--red);">✕</span></span>`;
+    });
+    html += '</div>';
+  }
+  html += `</div>`;
+  html += `<button class="btn-add" id="saveTaskBtn" style="margin-top:16px;width:100%;">+ Add This Task</button>`;
+  html += '</div>';
+  if (d.tasks.length){
+    html += '<div class="list-items">';
+    d.tasks.forEach(t=>{
+      html += `<div class="list-item"><div><div class="liname">${escapeHtml(t.name)}</div>
+        <div class="lisub">${t.requirements.length ? t.requirements.length + ' requirement' + (t.requirements.length>1?'s':'') : 'No requirements'}</div></div>
+        <button class="li-remove" data-id="${t.id}">✕</button></div>`;
+    });
+    html += '</div>';
+  } else {
+    html += '<div class="empty-note">No tasks yet — add at least one to continue.</div>';
+  }
+  html += `<div class="nav-row" style="margin-top:20px;"><button class="btn-continue" id="contBtn" ${d.tasks.length?'':'disabled'}>Continue</button></div>`;
+  html += '</div>';
+  appEl.innerHTML = html;
+  bindCancel();
+
+  const taskInput = document.getElementById('taskInput');
+  const reqInput = document.getElementById('reqInput');
+
+  document.getElementById('addReqBtn').addEventListener('click', ()=>{
+    const v = reqInput.value.trim();
+    if(!v) return;
+    state.taskDraftReqs.push(v);
+    reqInput.value = "";
+    render();
+  });
+  reqInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('addReqBtn').click(); } });
+
+  appEl.querySelectorAll('[data-ri]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.taskDraftReqs.splice(parseInt(el.dataset.ri),1);
+      render();
+    });
+  });
+
+  document.getElementById('saveTaskBtn').addEventListener('click', ()=>{
+    const v = taskInput.value.trim();
+    if(!v) return;
+    d.tasks.push({
+      id: uid('task'), name: v,
+      requirements: state.taskDraftReqs.map(r=>({id:uid('req'), label:r}))
+    });
+    state.taskDraftReqs = [];
+    render();
+  });
+
+  appEl.querySelectorAll('.li-remove').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      d.tasks = d.tasks.filter(t=>t.id!==el.dataset.id);
+      render();
+    });
+  });
+
+  document.getElementById('contBtn').addEventListener('click', ()=>{
+    if(!d.tasks.length) return;
+    state.screen = "setupContact";
+    render();
+  });
+}
+
+function renderSetupContact(){
+  const d = state.draft;
+  let html = stepHeader("Create Your Workflow");
+  html += '<div class="stage"><div class="step-card">';
+  html += '<div class="step-label">Step 5</div><div class="step-q">Contact information</div><div class="step-hint">Used if the team needs to reach whoever runs this workspace.</div>';
+  html += `<input type="tel" id="phoneInput" placeholder="Phone number (optional)" value="${escapeHtml(d.contact.phone)}">`;
+  html += `<input type="email" id="emailInput" placeholder="Email (optional)" value="${escapeHtml(d.contact.email)}">`;
+  html += '</div>';
+  html += `<div class="nav-row"><button class="btn-continue" id="contBtn">Continue</button></div>`;
+  html += '</div>';
+  appEl.innerHTML = html;
+  bindCancel();
+  const phone = document.getElementById('phoneInput');
+  const email = document.getElementById('emailInput');
+  phone.addEventListener('input', ()=>{ d.contact.phone = phone.value; });
+  email.addEventListener('input', ()=>{ d.contact.email = email.value; });
+  document.getElementById('contBtn').addEventListener('click', ()=>{
+    state.screen = "setupReview";
+    render();
+  });
+}
+
+function renderSetupReview(){
+  const d = state.draft;
+  let html = stepHeader("Create Your Workflow");
+  html += '<div class="stage">';
+  html += `<div class="step-card"><div class="step-label">Step 6</div><div class="step-q">Review your workspace</div></div>`;
+
+  html += `<div class="review-block"><div class="review-label">Business</div><div class="review-val">${d.logo} ${escapeHtml(d.businessName)}</div><div class="review-list">${d.categoryLabel}</div></div>`;
+
+  html += `<div class="review-block"><div class="review-label">Team (${d.team.length})</div><div class="review-list">${d.team.map(m=>escapeHtml(m.name)).join(', ')}</div></div>`;
+
+  html += `<div class="review-block"><div class="review-label">Tasks (${d.tasks.length})</div><div class="review-list">`;
+  html += d.tasks.map(t=>`${escapeHtml(t.name)}${t.requirements.length ? ' — ' + t.requirements.map(r=>r.label).join(', ') : ''}`).join('<br>');
+  html += `</div></div>`;
+
+  if (d.contact.phone || d.contact.email){
+    html += `<div class="review-block"><div class="review-label">Contact</div><div class="review-list">${[d.contact.phone, d.contact.email].filter(Boolean).join(' · ')}</div></div>`;
+  }
+
+  html += `<div class="nav-row" style="margin-top:8px;"><button class="btn-continue" id="createBtn">Create My Workspace</button></div>`;
+  html += '</div>';
+  appEl.innerHTML = html;
+  bindCancel();
+  document.getElementById('createBtn').addEventListener('click', createWorkspace);
+}
+
+async function createWorkspace(){
+  const d = state.draft;
+  const code = genCode();
+  const workspace = {
+    code,
+    category: d.category, categoryLabel: d.categoryLabel,
+    businessName: d.businessName, logo: d.logo,
+    team: d.team,
+    tasks: d.tasks.map(t=>({
+      id:t.id, name:t.name,
+      requirements:t.requirements,
+      status:"unassigned", assignedTo:null, completedReqs:[]
+    })),
+    contact: d.contact,
+    createdAt: Date.now(),
+  };
+  try{
+    await window.storage.set("workflow:"+code, JSON.stringify(workspace), true);
+  }catch(e){ /* best effort, still show code */ }
+
+  state = { screen:"created", code };
+  render();
+}
+
+function renderCreated(){
+  let html = '<div class="stage"><div class="created-card">';
+  html += '<div class="created-emoji">🎉</div>';
+  html += '<div class="created-title">Workspace Created</div>';
+  html += '<div class="created-text">Share this code with your team so they can join and start checking in.</div>';
+  html += `<div class="code-label">Workspace Code</div><div class="code-box">${state.code}</div>`;
+  html += `<button class="btn-continue" id="enterBtn" style="width:100%;">Enter Workspace</button>`;
+  html += `<div style="height:10px;"></div>`;
+  html += `<button class="btn-skip" id="homeBtn3" style="width:100%;">Back to Start</button>`;
+  html += '</div></div>';
+  appEl.innerHTML = html;
+  document.getElementById('enterBtn').addEventListener('click', ()=>enterWorkspace(state.code));
+  document.getElementById('homeBtn3').addEventListener('click', goLanding);
+}
+
+/* ---------------- JOIN ---------------- */
+function renderJoin(){
+  let html = '<div class="top-bar"><div class="brand"><div class="h1">Join Workflow</div></div><button class="back-btn" id="backBtn2">Cancel</button></div>';
+  html += '<div class="stage"><div class="step-card">';
+  html += '<div class="step-q">Enter your workspace code</div>';
+  html += `<input type="text" id="codeInput" placeholder="e.g. 7K2M" style="text-transform:uppercase;letter-spacing:3px;font-weight:800;" value="${state.joinCode||''}">`;
+  html += '</div>';
+  if (state.joinError){
+    html += `<div class="error-note">${state.joinError}</div>`;
+  }
+  html += `<div class="nav-row"><button class="btn-continue" id="joinBtn">Join</button></div>`;
+  html += '</div>';
+  appEl.innerHTML = html;
+  document.getElementById('backBtn2').addEventListener('click', goLanding);
+  const input = document.getElementById('codeInput');
+  document.getElementById('joinBtn').addEventListener('click', async ()=>{
+    const code = input.value.trim().toUpperCase();
+    if(!code) return;
+    await enterWorkspace(code);
+  });
+  input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ document.getElementById('joinBtn').click(); } });
+}
+
+async function enterWorkspace(code){
+  appEl.innerHTML = '<div class="loading">Loading workspace…</div>';
+  try{
+    const res = await window.storage.get("workflow:"+code, true);
+    if(!res || !res.value){
+      state = { screen:"join", joinCode:code, joinError:"We couldn't find a workspace with that code." };
+      render();
+      return;
+    }
+    const workspace = JSON.parse(res.value);
+    state = { screen:"who", code, workspace };
+    render();
+  }catch(e){
+    state = { screen:"join", joinCode:code, joinError:"We couldn't find a workspace with that code." };
+    render();
+  }
+}
+
+/* ---------------- WHO ARE YOU ---------------- */
+function renderWho(){
+  const w = state.workspace;
+  let html = '<div class="top-bar"><div class="brand"><div class="h1">'+w.logo+' '+escapeHtml(w.businessName)+'</div><div class="h2">Who are you?</div></div>'
+    + '<button class="home-btn" id="homeBtn">Start</button></div>';
+  html += '<div class="stage"><div class="member-grid">';
+  w.team.forEach(m=>{
+    html += `<div class="member-card" data-id="${m.id}"><div class="member-avatar">${initials(m.name)}</div><div class="member-name">${escapeHtml(m.name)}</div></div>`;
+  });
+  html += '</div></div>';
+  appEl.innerHTML = html;
+  document.getElementById('homeBtn').addEventListener('click', goLanding);
+  appEl.querySelectorAll('.member-card').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.me = w.team.find(m=>m.id===el.dataset.id);
+      state.screen = "board";
+      render();
+    });
+  });
+}
+
+/* ---------------- BOARD ---------------- */
+async function refreshWorkspace(){
+  try{
+    const res = await window.storage.get("workflow:"+state.code, true);
+    if(res && res.value) state.workspace = JSON.parse(res.value);
+  }catch(e){}
+}
+async function saveWorkspace(){
+  try{
+    await window.storage.set("workflow:"+state.code, JSON.stringify(state.workspace), true);
+  }catch(e){}
+}
+
+async function renderBoard(){
+  appEl.innerHTML = '<div class="loading">Refreshing board…</div>';
+  await refreshWorkspace();
+
+  const w = state.workspace;
+  const mine = w.tasks.filter(t=>t.assignedTo===state.me.id && t.status!=="done");
+  const available = w.tasks.filter(t=>t.status==="unassigned");
+  const others = w.tasks.filter(t=>t.assignedTo && t.assignedTo!==state.me.id && t.status!=="done");
+  const done = w.tasks.filter(t=>t.status==="done");
+
+  let html = '';
+  html += `<div class="top-bar"><div class="brand"><div class="h1">${w.logo} ${escapeHtml(w.businessName)}</div><div class="h2">${w.categoryLabel}</div></div>
+    <button class="home-btn" id="homeBtn">Switch</button></div>`;
+
+  html += `<div class="board-header"><div class="board-logo">${initials(state.me.name)!=='' ? '' : ''}</div>
+    <div><div class="board-biz">👋 ${escapeHtml(state.me.name)}</div><div class="board-who">Workspace code: ${state.code}</div></div></div>`;
+
+  html += '<div class="stage">';
+
+  html += '<div class="section-title">Your Tasks</div>';
+  if (mine.length){
+    mine.forEach(t=>{ html += taskCard(t, "mine"); });
+  } else {
+    html += '<div class="empty-board">Nothing assigned to you right now.</div>';
+  }
+
+  html += '<div class="section-title">Available — Can You Take It?</div>';
+  if (available.length){
+    available.forEach(t=>{ html += taskCard(t, "unassigned"); });
+  } else {
+    html += '<div class="empty-board">No open tasks right now.</div>';
+  }
+
+  if (others.length){
+    html += '<div class="section-title">With Other Team Members</div>';
+    others.forEach(t=>{ html += taskCard(t, "assigned"); });
+  }
+
+  if (done.length){
+    html += '<div class="section-title">Done</div>';
+    done.forEach(t=>{ html += taskCard(t, "done"); });
+  }
+
+  html += '</div>';
+  appEl.innerHTML = html;
+  document.getElementById('homeBtn').addEventListener('click', ()=>{ state.screen="who"; render(); });
+  appEl.querySelectorAll('.task-card').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.activeTaskId = el.dataset.id;
+      state.screen = "detail";
+      render();
+    });
+  });
+}
+
+function taskCard(t, kind){
+  const w = state.workspace;
+  let statusClass = t.status;
+  let statusLabel = "UNASSIGNED";
+  let meta = "Nobody has this yet";
+  if (t.status === "assigned"){
+    statusLabel = "IN PROGRESS";
+    statusClass = (t.assignedTo === state.me.id) ? "mine" : "assigned";
+    const person = w.team.find(m=>m.id===t.assignedTo);
+    meta = person ? ("With " + person.name) : "Assigned";
+  } else if (t.status === "done"){
+    statusLabel = "DONE";
+    statusClass = "done";
+    meta = "Completed";
+  } else {
+    meta = t.requirements.length ? (t.requirements.length + " requirement" + (t.requirements.length>1?"s":"")) : "No requirements";
+  }
+  return `<div class="task-card" data-id="${t.id}">
+    <div class="task-top"><div class="task-name">${escapeHtml(t.name)}</div>
+      <div class="task-status ${statusClass}">${statusLabel}</div></div>
+    <div class="task-meta">${meta}</div>
+  </div>`;
+}
+
+/* ---------------- TASK DETAIL ---------------- */
+function renderDetail(){
+  const w = state.workspace;
+  const t = w.tasks.find(x=>x.id===state.activeTaskId);
+  if(!t){ state.screen="board"; render(); return; }
+
+  const isMine = t.assignedTo === state.me.id;
+  const person = t.assignedTo ? w.team.find(m=>m.id===t.assignedTo) : null;
+
+  let html = `<div class="top-bar"><div class="brand"><div class="h1">${escapeHtml(t.name)}</div></div>
+    <button class="back-btn" id="backBtn3">Back</button></div>`;
+
+  html += '<div class="stage"><div class="detail-card">';
+  html += `<div class="step-label">${w.categoryLabel}</div>`;
+  html += `<div class="step-q">${escapeHtml(t.name)}</div>`;
+  if (t.status === "done"){
+    html += `<div class="step-hint">✅ Completed${person? ' by ' + escapeHtml(person.name) : ''}.</div>`;
+  } else if (person){
+    html += `<div class="step-hint">Currently with ${escapeHtml(person.name)}${isMine?' (you)':''}.</div>`;
+  } else {
+    html += `<div class="step-hint">Nobody has this yet.</div>`;
+  }
+  html += '</div>';
+
+  if (t.requirements.length){
+    html += '<div class="section-title">What must be checked before this is done</div>';
+    t.requirements.forEach(r=>{
+      const checked = t.completedReqs.includes(r.id);
+      html += `<div class="req-item ${checked?'checked':''}" data-rid="${r.id}"><div class="req-box">${checked?'✓':''}</div><div class="req-label">${escapeHtml(r.label)}</div></div>`;
+    });
+  }
+
+  if (t.status !== "done"){
+    if (!t.assignedTo){
+      html += `<button class="btn-action btn-claim" id="claimBtn">🤝 I'll Take It</button>`;
+    } else if (isMine){
+      const allChecked = t.requirements.every(r=>t.completedReqs.includes(r.id));
+      html += `<button class="btn-action btn-complete" id="completeBtn" ${allChecked?'':'disabled'}>✅ Mark Complete</button>`;
+      html += `<button class="btn-action btn-release" id="releaseBtn">Release This Task</button>`;
+    } else {
+      html += `<button class="btn-action btn-claim" id="takeOverBtn">Take Over From ${escapeHtml(person.name)}</button>`;
+    }
+  }
+
+  html += '</div>';
+  appEl.innerHTML = html;
+
+  document.getElementById('backBtn3').addEventListener('click', ()=>{ state.screen="board"; render(); });
+
+  appEl.querySelectorAll('.req-item').forEach(el=>{
+    el.addEventListener('click', async ()=>{
+      const rid = el.dataset.rid;
+      const idx = t.completedReqs.indexOf(rid);
+      if (idx >= 0) t.completedReqs.splice(idx,1);
+      else t.completedReqs.push(rid);
+      await saveWorkspace();
+      render();
+    });
+  });
+
+  const claimBtn = document.getElementById('claimBtn');
+  if (claimBtn) claimBtn.addEventListener('click', async ()=>{
+    t.assignedTo = state.me.id;
+    t.status = "assigned";
+    await saveWorkspace();
+    render();
+  });
+
+  const takeOverBtn = document.getElementById('takeOverBtn');
+  if (takeOverBtn) takeOverBtn.addEventListener('click', async ()=>{
+    t.assignedTo = state.me.id;
+    await saveWorkspace();
+    render();
+  });
+
+  const releaseBtn = document.getElementById('releaseBtn');
+  if (releaseBtn) releaseBtn.addEventListener('click', async ()=>{
+    t.assignedTo = null;
+    t.status = "unassigned";
+    t.completedReqs = [];
+    await saveWorkspace();
+    state.screen = "board";
+    render();
+  });
+
+  const completeBtn = document.getElementById('completeBtn');
+  if (completeBtn) completeBtn.addEventListener('click', async ()=>{
+    t.status = "done";
+    await saveWorkspace();
+    state.screen = "board";
+    render();
+  });
+}
+
+/* ---------------- UTIL ---------------- */
+function escapeHtml(s){
+  return String(s||"").replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+goLanding();
+
+})();
+</script>
+</body>
+</html>
