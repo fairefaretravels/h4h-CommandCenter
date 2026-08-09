@@ -102,6 +102,12 @@ function positivePop(force=false){if(!force&&Math.random()>.35)return;let m=posi
 function closePopup(){$("popup").classList.remove("show")}
 function toast(i,t,x){$("ti").textContent=i;$("tt").textContent=t;$("tx").textContent=x;let q=$("toast");q.classList.add("show");clearTimeout(window.tt);window.tt=setTimeout(()=>q.classList.remove("show"),4200)}
 function goRoles(){if(unsubTasks)unsubTasks();if(unsubStatus)unsubStatus();show(roles)}
+
+// Expose handlers used by inline onclick="" attributes.
+// ES module top-level functions are NOT automatically attached to window,
+// so without this, every button click fails silently with "X is not defined".
+Object.assign(window,{start,yes,no,fixed,askHelp,available,requestTask,claim,openLeadTasks,listen,closePopup,goRoles,show});
+
 renderRoles();
 </script>
 </body>
