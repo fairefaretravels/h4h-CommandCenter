@@ -8,28 +8,203 @@
 <style>
 :root{--bg:#080808;--card:#151515;--card2:#202020;--line:#303030;--txt:#fff;--muted:#aaa;--gold:#f4c542;--green:#27d276;--red:#ef5350;--blue:#67a4ff}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}button{font:inherit;-webkit-tap-highlight-color:transparent}.app{max-width:620px;min-height:100vh;margin:auto;padding:18px 14px 35px}header{text-align:center;padding:7px 0 18px}.brand{color:var(--gold);font-size:12px;font-weight:900;letter-spacing:2px}h1{margin:5px 0;font-size:34px;line-height:1;letter-spacing:-1px}.tag{color:var(--muted);font-size:13px}.screen{display:none}.screen.active{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px}.kicker{color:var(--gold);font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:9px}.title{margin:0;font-size:28px;line-height:1.08}.sub{color:var(--muted);font-size:14px;line-height:1.45;margin:9px 0 20px}.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.role-btn{min-height:108px;border:1px solid var(--line);border-radius:18px;background:var(--card2);color:#fff;padding:13px 9px}.role-btn .icon{font-size:30px;display:block;margin-bottom:8px}.role-btn strong{font-size:14px;display:block}.role-btn small{display:block;color:var(--muted);font-size:10px;margin-top:5px;line-height:1.25}.privacy{margin-top:15px;padding:13px;border-radius:14px;background:#101010;border:1px solid var(--line);color:var(--muted);font-size:11px;line-height:1.45}.privacy strong{color:#fff}.top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:17px}.role{display:flex;align-items:center;gap:10px}.role-icon{font-size:31px}.role-name{font-size:20px;font-weight:900}.role-desc{font-size:11px;color:var(--muted);margin-top:2px}.pill{border-radius:999px;padding:7px 9px;font-size:9px;font-weight:900;white-space:nowrap;border:1px solid var(--line)}.working{color:var(--gold);border-color:#725e20;background:#211d0d}.ready{color:var(--green);border-color:#236844;background:#0c2117}.help{color:#ff8581;border-color:#70312f;background:#24100f}.available{color:var(--blue);border-color:#31598e;background:#101c2d}.progress-meta{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-bottom:7px}.progress{height:7px;background:#292929;border-radius:99px;overflow:hidden;margin-bottom:22px}.bar{height:100%;background:var(--gold);width:0;transition:.25s}.question{font-size:clamp(27px,7vw,38px);line-height:1.06;letter-spacing:-1px;margin:0 0 10px}.listen{width:100%;min-height:52px;border:1px solid #454545;border-radius:14px;background:#101010;color:#fff;font-weight:900;margin:4px 0 17px}.answer-grid,.stack,.tasks{display:grid;gap:11px}.answer{min-height:76px;border-radius:17px;border:2px solid var(--line);background:#202020;color:#fff;font-size:18px;font-weight:900}.yes{border-color:#246d48}.no{border-color:#6d302e}.helpbox{display:none;margin-top:15px;padding:15px;border-radius:15px;border:1px solid #70312f;background:#24100f;line-height:1.45;font-size:14px}.helpbox.show{display:block}.helpbox strong{display:block;color:#ff8581;margin-bottom:5px}.primary,.secondary,.danger{width:100%;min-height:58px;border-radius:15px;font-weight:900}.primary{background:var(--gold);color:#080808;border:1px solid var(--gold)}.secondary{background:transparent;color:#fff;border:1px solid var(--line)}.danger{background:#28100f;color:#ff8581;border:1px solid #6d302e}.center{text-align:center}.check{width:90px;height:90px;border-radius:50%;margin:4px auto 18px;display:grid;place-items:center;color:var(--green);border:2px solid var(--green);background:#0d2318;font-size:45px}.box{margin-top:16px;padding:16px;border-radius:17px;background:#101010;border:1px solid var(--line)}.box h3{margin:0 0 7px}.box p{color:var(--muted);font-size:12px;line-height:1.4;margin:0 0 12px}.breaks{display:grid;grid-template-columns:1fr 1fr;gap:10px}.break{min-height:76px;border:1px solid var(--line);border-radius:16px;background:#202020;color:#fff;font-weight:900}.break span{display:block;font-size:26px;margin-bottom:5px}.task{background:#101010;border:1px solid var(--line);border-radius:16px;padding:14px}.taskhead{display:flex;justify-content:space-between;gap:10px}.tasktitle{font-weight:900}.meta{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}.task button{min-height:49px;border-radius:12px;font-weight:900;border:1px solid var(--line);background:#222;color:#fff;margin-top:12px;width:100%}.claim{background:var(--gold)!important;color:#080808!important;border-color:var(--gold)!important}.summary{display:grid;gap:9px;margin-top:15px}.row{display:flex;justify-content:space-between;align-items:center;padding:13px;border-radius:13px;background:#101010;border:1px solid var(--line)}.state{font-size:10px;font-weight:900}.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,130px);width:min(92vw,520px);background:#202020;border:1px solid #444;border-radius:18px;padding:16px;text-align:center;z-index:50;box-shadow:0 15px 45px #0008;transition:.3s}.toast.show{transform:translate(-50%,0)}.toast .ti{font-size:27px}.toast strong{display:block;margin:6px 0 3px}.toast small{color:var(--muted)}.popup{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:60}.popup.show{display:flex}.popup-card{width:min(100%,430px);background:#171717;border:1px solid #404040;border-radius:24px;padding:25px;text-align:center}.popup-card .pi{font-size:43px}.popup-card h2{font-size:26px;margin:9px 0 7px}.popup-card p{color:var(--muted);line-height:1.5;margin:0 0 18px}.back{background:none;border:0;color:var(--muted);padding:0;margin-bottom:14px;font-weight:800}@media(max-width:420px){.app{padding-left:11px;padding-right:11px}.card{padding:15px}.role-grid{gap:8px}.role-btn{min-height:100px}.breaks{grid-template-columns:1fr}}
-</style>
+.intake-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:58px;
+  margin-top:14px;
+  border-radius:15px;
+  background:var(--gold);
+  color:#080808;
+  border:1px solid var(--gold);
+  text-decoration:none;
+  font-weight:900;
+  font-size:15px;
+  text-align:center;
+  -webkit-tap-highlight-color:transparent;
+}
+.intake-btn:active{
+  transform:scale(.98);
+}
+</style> 
 </head>
 <body>
 <div class="app">
-<header><div class="brand">HIT FOR HIT BATTLES™</div><h1>TEAM CHECK-IN</h1><div class="tag">Do your part. Stay posted. Help the team.</div></header>
-
-<section id="roles" class="screen active"><div class="card"><div class="kicker">Start Here</div><h2 class="title">Who are you?</h2><p class="sub">Pick your role. We'll keep the rest simple.</p><div id="roleGrid" class="role-grid"></div><div class="privacy"><strong>Privacy first.</strong><br>This app does not track location, read photos/files, monitor your phone, or track you after the event. It records only team check-in and task information.</div></div></section>
-
-<section id="check" class="screen"><button class="back" onclick="goRoles()">← Change role</button><div class="card"><div class="top"><div class="role"><span id="ricon" class="role-icon"></span><div><div id="rname" class="role-name"></div><div id="rdesc" class="role-desc"></div></div></div><div id="pill" class="pill working">IN PROGRESS</div></div><div class="progress-meta"><span id="ptext"></span><span id="ppct"></span></div><div class="progress"><div id="bar" class="bar"></div></div><div id="question"></div><div id="helpbox" class="helpbox"></div></div></section>
-
-<section id="complete" class="screen"><div class="card"><div class="center"><div class="check">✓</div><div class="kicker">Checklist Complete</div><h2 id="ctitle" class="title">YOU'RE READY</h2><p class="sub">Your work is complete. Stay on your post. If your work stops, make yourself available instead of leaving to find someone.</p></div><div class="box"><h3>Are you free to help?</h3><p>If your work is complete or temporarily stopped, you can make yourself available to the team.</p><button class="primary" onclick="available()">🟢 I'M AVAILABLE</button><div class="stack" style="margin-top:10px"><button class="secondary" onclick="goRoles()">I'm Done — Leave Me On My Post</button></div></div></div></section>
-
-<section id="avail" class="screen"><button class="back" onclick="show(complete)">← Back</button><div class="card"><div class="center"><div class="kicker">Team Mode</div><h2 class="title">YOU'RE AVAILABLE</h2><p class="sub">Stay aware. Team requests appear here.</p></div><div id="tasks" class="tasks"></div><div class="box"><h3>Need a break?</h3><p>Request relief instead of leaving your post looking for someone.</p><div class="breaks"><button class="break" onclick="requestTask('🚰','I need water')"><span>🚰</span>WATER</button><button class="break" onclick="requestTask('🚻','I need a bathroom break')"><span>🚻</span>BATHROOM</button></div></div><div class="stack"><button class="secondary" onclick="goRoles()">Return to My Role</button></div></div></section>
-
-<section id="lead" class="screen"><button class="back" onclick="goRoles()">← Roles</button><div class="card"><div class="center"><div class="kicker">Team Lead</div><h2 class="title">TEAM STATUS</h2><p class="sub">Live crew status. No refreshing needed.</p></div><div id="summary" class="summary"></div><div class="stack"><button class="primary" onclick="openLeadTasks()">VIEW TEAM REQUESTS</button></div></div></section>
-
-<section id="leadtasks" class="screen"><button class="back" onclick="show(lead)">← Team Status</button><div class="card"><div class="kicker">Team Requests</div><h2 class="title">WHO NEEDS HELP?</h2><p class="sub">Keep people at their critical posts while routing help to available teammates.</p><div id="leadTaskList" class="tasks"></div></div></section>
+<header>
+  <div class="brand">HIT FOR HIT BATTLES™</div>
+  <h1>TEAM CHECK-IN</h1>
+  <div class="tag">Do your part. Stay posted. Help the team.</div>
+</header>
+<section id="roles" class="screen active">
+  <div class="card">
+    <div class="kicker">Start Here</div>
+    <h2 class="title">Who are you?</h2>
+    <p class="sub">
+      Pick your role. We'll keep the rest simple.
+    </p>
+    <div id="roleGrid" class="role-grid"></div>
+    <div class="privacy">
+      <strong>Privacy first.</strong><br>
+      This app does not track location, read photos/files, monitor your phone,
+      or track you after the event. It records only team check-in and task information.
+    </div>
+    <a href="/INTAKE/" class="intake-btn">
+      🎤 INTAKE — KNOW AN ARTIST?
+    </a>
+  </div>
+</section>
+<section id="check" class="screen">
+  <button class="back" onclick="goRoles()">← Change role</button>
+  <div class="card">
+    <div class="top">
+      <div class="role">
+        <span id="ricon" class="role-icon"></span>
+        <div>
+          <div id="rname" class="role-name"></div>
+          <div id="rdesc" class="role-desc"></div>
+        </div>
+      </div>
+      <div id="pill" class="pill working">
+        IN PROGRESS
+      </div>
+    </div>
+    <div class="progress-meta">
+      <span id="ptext"></span>
+      <span id="ppct"></span>
+    </div>
+    <div class="progress">
+      <div id="bar" class="bar"></div>
+    </div>
+    <div id="question"></div>
+    <div id="helpbox" class="helpbox"></div>
+  </div>
+</section>
+<section id="complete" class="screen">
+  <div class="card">
+    <div class="center">
+      <div class="check">✓</div>
+      <div class="kicker">Checklist Complete</div>
+      <h2 id="ctitle" class="title">
+        YOU'RE READY
+      </h2>
+      <p class="sub">
+        Your work is complete. Stay on your post.
+        If your work stops, make yourself available instead of leaving to find someone.
+      </p>
+    </div>
+    <div class="box">
+      <h3>Are you free to help?</h3>
+      <p>
+        If your work is complete or temporarily stopped,
+        you can make yourself available to the team.
+      </p>
+      <button class="primary" onclick="available()">
+        🟢 I'M AVAILABLE
+      </button>
+      <div class="stack" style="margin-top:10px">
+        <button class="secondary" onclick="goRoles()">
+          I'm Done — Leave Me On My Post
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="avail" class="screen">
+  <button class="back" onclick="show(complete)">← Back</button>
+  <div class="card">
+    <div class="center">
+      <div class="kicker">Team Mode</div>
+      <h2 class="title">
+        YOU'RE AVAILABLE
+      </h2>
+      <p class="sub">
+        Stay aware. Team requests appear here.
+      </p>
+    </div>
+    <div id="tasks" class="tasks"></div>
+    <div class="box">
+      <h3>Need a break?</h3>
+      <p>
+        Request relief instead of leaving your post looking for someone.
+      </p>
+      <div class="breaks">
+        <button class="break" onclick="requestTask('🚰','I need water')">
+          <span>🚰</span>
+          WATER
+        </button>
+        <button class="break" onclick="requestTask('🚻','I need a bathroom break')">
+          <span>🚻</span>
+          BATHROOM
+        </button>
+      </div>
+    </div>
+    <div class="stack">
+      <button class="secondary" onclick="goRoles()">
+        Return to My Role
+      </button>
+    </div>
+  </div>
+</section>
+<section id="lead" class="screen">
+  <button class="back" onclick="goRoles()">← Roles</button>
+  <div class="card">
+    <div class="center">
+      <div class="kicker">Team Lead</div>
+      <h2 class="title">
+        TEAM STATUS
+      </h2>
+      <p class="sub">
+        Live crew status. No refreshing needed.
+      </p>
+    </div>
+    <div id="summary" class="summary"></div>
+    <div class="stack">
+      <button class="primary" onclick="openLeadTasks()">
+        VIEW TEAM REQUESTS
+      </button>
+    </div>
+  </div>
+</section>
+<section id="leadtasks" class="screen">
+  <button class="back" onclick="show(lead)">
+    ← Team Status
+  </button>
+  <div class="card">
+    <div class="kicker">
+      Team Requests
+    </div>
+    <h2 class="title">
+      WHO NEEDS HELP?
+    </h2>
+    <p class="sub">
+      Keep people at their critical posts while routing help to available teammates.
+    </p>
+    <div id="leadTaskList" class="tasks"></div>
+  </div>
+</section>
 </div>
-
-<div id="popup" class="popup"><div class="popup-card"><div id="pi" class="pi">✨</div><h2 id="pt"></h2><p id="px"></p><button class="primary" onclick="closePopup()">KEEP GOING</button></div></div>
-<div id="toast" class="toast"><div id="ti" class="ti">🤝</div><strong id="tt"></strong><small id="tx"></small></div>
-
+<div id="popup" class="popup">
+  <div class="popup-card">
+    <div id="pi" class="pi">
+      ✨
+    </div>
+    <h2 id="pt"></h2>
+    <p id="px"></p>
+    <button class="primary" onclick="closePopup()">
+      KEEP GOING
+    </button>
+  </div>
+</div>
+<div id="toast" class="toast">
+  <div id="ti" class="ti">
+    🤝
+  </div>
+  <strong id="tt"></strong>
+  <small id="tx"></small>
+</div>
+</body>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import{getFirestore,doc,setDoc,updateDoc,getDoc,collection,addDoc,onSnapshot,query,where,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
