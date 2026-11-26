@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090b0a">
+<title>Operation First Signal | H4H Command Center</title>
+<style>
+:root{--bg:#090b0a;--panel:#121714;--panel2:#171f1a;--line:#2a382f;--text:#f2f4ef;--muted:#a2afa5;--green:#9bd6a7;--gold:#d5b66b;--red:#e58b82;--radius:16px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0%,#1b2b20 0,transparent 35%),var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.shell{max-width:1400px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:20px}.eyebrow{color:var(--gold);font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.brand{font-size:clamp(25px,4vw,40px);font-weight:850;letter-spacing:-.04em;margin:4px 0}.sub{color:var(--muted);max-width:700px}.pill{border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:var(--green);font-size:12px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}.stat,.panel,.task,.dept{background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius)}.stat{padding:16px}.stat strong{display:block;font-size:27px}.stat span{color:var(--muted);font-size:12px}.tabs{display:flex;gap:8px;overflow:auto;padding:4px 0 14px}.tab,.btn{border:1px solid var(--line);background:#141b16;color:var(--text);padding:10px 14px;border-radius:10px}.tab.active,.btn.primary{background:var(--green);border-color:var(--green);color:#0b130d;font-weight:800}.btn.gold{background:var(--gold);border-color:var(--gold);color:#171309;font-weight:800}.btn.danger{border-color:#70413d;color:#ffc0b8}.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(270px,.8fr);gap:16px}.panel{padding:20px;margin-bottom:16px}.panel h2{margin:0 0 12px;font-size:19px}.muted{color:var(--muted)}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.between{justify-content:space-between}.field{display:grid;gap:6px;margin:10px 0}.field label{font-size:12px;color:var(--muted);font-weight:700}.field input,.field select,.field textarea{width:100%;background:#0c110e;border:1px solid var(--line);color:var(--text);border-radius:9px;padding:11px}.field textarea{min-height:92px;resize:vertical}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.task{padding:14px;margin:10px 0}.task h3{font-size:15px;margin:0 0 4px}.task p{margin:4px 0;color:var(--muted);font-size:13px}.task select{background:#0c110e;color:var(--text);border:1px solid var(--line);padding:7px;border-radius:8px}.tag{font-size:10px;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--line);border-radius:99px;padding:4px 8px;color:var(--gold)}.deptgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.dept{padding:16px}.dept h3{margin:0 0 4px}.dept p{font-size:13px;color:var(--muted);margin:4px 0}.approval{border-left:3px solid var(--gold);padding:10px 12px;background:#171a13;border-radius:8px;margin:9px 0}.hidden{display:none!important}.notice{padding:12px;border:1px solid #675a35;background:#211d12;color:#ead9a5;border-radius:10px;font-size:13px}.small{font-size:12px}.footer{color:var(--muted);font-size:12px;text-align:center;padding:20px}.chatlog{height:310px;overflow:auto;background:#0b100d;border:1px solid var(--line);border-radius:10px;padding:12px;margin:12px 0;white-space:pre-wrap}.bubble{padding:10px 12px;border-radius:10px;background:#17221a;margin:8px 0}.bubble.user{background:#20251e;border:1px solid #424332}.progress{height:7px;background:#263129;border-radius:9px;overflow:hidden}.progress i{display:block;height:100%;background:var(--green);width:0}
+@media(max-width:800px){.shell{padding:16px}.stats{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}.grid2,.deptgrid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="top">
+ <div><div class="eyebrow">H4H Command Center · Strategic Operations</div><div class="brand">OPERATION FIRST SIGNAL</div><div class="sub">Radio Meltdown launch + first artist campaign. One command structure, clear owners, measurable execution.</div></div>
+ <div class="pill">INTERNAL WORKSPACE · EXECUTIVE CONTROL</div>
+</header>
+<section class="stats">
+ <div class="stat"><strong id="openCount">0</strong><span>OPEN ASSIGNMENTS</span></div>
+ <div class="stat"><strong id="doneCount">0</strong><span>COMPLETED</span></div>
+ <div class="stat"><strong id="approvalCount">0</strong><span>AWAITING APPROVAL</span></div>
+ <div class="stat"><strong id="progressPct">0%</strong><span>EXECUTION PROGRESS</span></div>
+</section>
+<nav class="tabs" aria-label="Sections">
+ <button class="tab active" data-tab="brief">Executive Brief</button><button class="tab" data-tab="assignments">Assignments</button><button class="tab" data-tab="departments">Departments</button><button class="tab" data-tab="campaign">Campaign Plan</button><button class="tab" data-tab="approvals">Approvals</button><button class="tab" data-tab="strategist">AI Strategist</button>
+</nav>
+
+<section id="brief" class="view">
+ <div class="layout">
+  <div>
+   <div class="panel"><div class="eyebrow">Mission objective</div><h2>Launch the station. Build the first campaign. Prove the system.</h2>
+    <p class="muted">First Signal is the controlled launch operation for Radio Meltdown and its first featured artist campaign. The objective is not to look busy. It is to establish a repeatable operating system that produces audience growth, press attention, partnerships and revenue.</p>
+    <div class="notice">Executive rule: no public publishing, paid spend, media outreach, contracts or external commitments happen without Executive Director approval.</div>
+   </div>
+   <div class="panel"><h2>Executive priorities</h2>
+    <ol><li>Confirm the station experience works end-to-end: website, stream, player and mobile.</li><li>Choose the lead artist, track and campaign objective.</li><li>Build the campaign calendar around real assets and a realistic launch date.</li><li>Assign clear owners, deadlines and success measures.</li><li>Review results weekly and adjust based on evidence.</li></ol>
+   </div>
+   <div class="panel"><h2>Campaign command brief</h2>
+    <div class="grid2">
+     <div class="field"><label>Lead artist</label><input id="artist" placeholder="e.g. Mackinthedark"></div>
+     <div class="field"><label>Lead track / project</label><input id="track" placeholder="Choose the campaign lead"></div>
+     <div class="field"><label>Campaign type</label><select id="campaignType"><option>Single release</option><option>Artist introduction</option><option>Catalog revival</option><option>Station launch</option></select></div>
+     <div class="field"><label>Target launch date</label><input id="launchDate" type="date"></div>
+    </div>
+    <div class="field"><label>Executive notes</label><textarea id="briefNotes" placeholder="Positioning, audience, constraints, important context..."></textarea></div>
+    <button class="btn primary" id="saveBrief">Save executive brief</button>
+   </div>
+  </div>
+  <aside>
+   <div class="panel"><h2>Command structure</h2>
+    <p><b>Executive Director</b><br><span class="muted">Saneca Mack · Final decisions and approvals</span></p>
+    <p><b>Chief Strategist & Operations</b><br><span class="muted">AI support · Planning, analysis, execution support</span></p>
+    <p><b>Jim · Campaign Manager</b><br><span class="muted">Calendar, coordination, performance tracking</span></p>
+    <p><b>Dru · Publicist</b><br><span class="muted">Artist story, press materials, media targets</span></p>
+    <p><b>Macy · Business Manager</b><br><span class="muted">Budget, rates, sponsorship and revenue model</span></p>
+   </div>
+   <div class="panel"><h2>Operating discipline</h2><p class="muted">Protect family time, school commitments and the work that pays the bills. A campaign plan that requires you to be available every hour is a bad plan, not ambition.</p></div>
+   <div class="panel"><h2>Data control</h2><p class="muted">This starter version saves data in this browser only. It does not sync across staff devices. Export a backup before switching devices or clearing browser data.</p><div class="row"><button class="btn" id="exportData">Export backup</button><label class="btn">Import backup<input id="importData" type="file" accept="application/json" hidden></label></div></div>
+  </aside>
+ </div>
+</section>
+
+<section id="assignments" class="view hidden"><div class="panel"><div class="row between"><div><h2>Assignment board</h2><p class="muted">Every task has one accountable owner. Update status as work moves.</p></div><button class="btn" id="addTask">+ Add assignment</button></div><div id="taskList"></div></div></section>
+<section id="departments" class="view hidden"><div class="panel"><h2>Department workspaces</h2><p class="muted">Initial deliverables are defined. Each department reports back to the Executive Director.</p><div class="deptgrid" id="deptList"></div></div></section>
+<section id="campaign" class="view hidden"><div class="panel"><h2>30-day campaign framework</h2><p class="muted">A working sequence, not a promise that every task takes exactly one day. Dates become real after the lead track and launch date are confirmed.</p><div id="calendarList"></div></div></section>
+<section id="approvals" class="view hidden"><div class="panel"><div class="row between"><div><h2>Executive approval queue</h2><p class="muted">Nothing externally binding moves without approval.</p></div><button class="btn" id="addApproval">+ Submit for approval</button></div><div id="approvalList"></div></div></section>
+<section id="strategist" class="view hidden"><div class="panel"><div class="eyebrow">Chief Strategist & Operations</div><h2>AI strategy desk</h2><p class="muted">Use this to pressure-test plans, draft internal strategy and identify the next highest-value action. AI recommendations are drafts, not approvals.</p>
+ <div class="field"><label>What are we solving?</label><textarea id="prompt" placeholder="Example: Build a realistic 30-day launch plan for the station and first artist campaign. Account for our team roles, limited time and approval rules."></textarea></div>
+ <div class="row"><button class="btn primary" id="askAI">Ask the strategist</button><span class="small muted" id="aiStatus">AI endpoint requires server configuration.</span></div>
+ <div id="chatlog" class="chatlog">Strategist desk ready. Add your API settings on the server before sending a request.</div>
+ <div class="notice">Security: the OpenAI key belongs in Vercel environment variables, never in this page. The optional access code is a shared gate, not individual staff authentication.</div>
+ </div></section>
+<div class="footer">OPERATION FIRST SIGNAL · H4H INTERNAL OPERATIONS · Executive approval governs external action.</div>
+</div>
+<script>
+const seedTasks=[
+{id:1,title:"Audit Radio Meltdown website, stream, player and mobile experience",owner:"Executive Director",status:"Not started",due:"",detail:"Test the live stream, player controls, navigation, links and mobile layout. Record defects."},
+{id:2,title:"Select the first artist, lead track and campaign objective",owner:"Executive Director",status:"Not started",due:"",detail:"Confirm the single or project that will anchor the first campaign."},
+{id:3,title:"Collect approved audio, artist photos, video and distribution links",owner:"Executive Director",status:"Not started",due:"",detail:"Create one approved asset folder and confirm usage rights."},
+{id:4,title:"Build the 30-day station and artist campaign calendar",owner:"Jim",status:"Not started",due:"",detail:"Sequence content, station promotion, artist moments and reporting."},
+{id:5,title:"Draft artist bio, press release and media target list",owner:"Dru",status:"Not started",due:"",detail:"Prepare materials for executive review. Do not send before approval."},
+{id:6,title:"Prepare campaign budget, rate card and sponsorship offer",owner:"Macy",status:"Not started",due:"",detail:"Separate estimated costs, proposed rates and revenue assumptions."},
+{id:7,title:"Define baseline metrics and weekly reporting",owner:"Jim",status:"Not started",due:"",detail:"Track listeners, stream sessions, site visits, engagement, leads and revenue."}
+];
+const departments=[
+["Jim","Campaign Manager","Owns the master calendar, task coordination, campaign milestones and weekly performance report.","First deliverable: 30-day campaign calendar + KPI baseline."],
+["Dru","Publicist","Owns artist positioning, bio, press release, media list and outreach preparation.","First deliverable: press kit draft + target media list."],
+["Macy","Business Manager","Owns budget, pricing, sponsorship packages, revenue assumptions and deal tracking.","First deliverable: campaign budget + rate card + sponsor offer."],
+["Executive Director","Saneca Mack","Sets priorities, supplies approved assets, makes final decisions and controls external approvals.","First deliverable: station audit + lead artist/track decision."]
+];
+const phases=[
+["Days 1–3","Foundation","Station audit, artist/track decision, asset inventory and baseline metrics."],
+["Days 4–7","Positioning","Artist story, campaign message, audience definition, offer and launch objective."],
+["Days 8–14","Build","Press kit, content calendar, station promos, landing page and sponsor materials."],
+["Days 15–21","Pre-launch","Schedule approved content, confirm partners, test links and prepare launch-day run sheet."],
+["Days 22–30","Launch & learn","Execute approved launch, monitor metrics, capture feedback and publish a post-campaign report."]
+];
+let state=load();
+function load(){try{return JSON.parse(localStorage.getItem("firstSignalState"))||{tasks:seedTasks,approvals:[],brief:{}}}catch(e){return{tasks:seedTasks,approvals:[],brief:{}}}}
+function save(){localStorage.setItem("firstSignalState",JSON.stringify(state));render()}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function render(){
+ const done=state.tasks.filter(t=>t.status==="Completed").length,open=state.tasks.length-done;
+ document.getElementById("openCount").textContent=open;document.getElementById("doneCount").textContent=done;
+ document.getElementById("approvalCount").textContent=state.approvals.filter(a=>a.status==="Pending").length;
+ document.getElementById("progressPct").textContent=(state.tasks.length?Math.round(done/state.tasks.length*100):0)+"%";
+ document.getElementById("taskList").innerHTML=state.tasks.map(t=>`<article class="task"><div class="row between"><h3>${esc(t.title)}</h3><span class="tag">${esc(t.owner)}</span></div><p>${esc(t.detail)}</p><div class="row between"><span class="small muted">Due: ${esc(t.due||"Not set")}</span><select aria-label="Task status" onchange="changeTask(${t.id},this.value)">${["Not started","In progress","Blocked","Completed"].map(s=>`<option ${t.status===s?"selected":""}>${s}</option>`).join("")}</select></div></article>`).join("");
+ document.getElementById("deptList").innerHTML=departments.map(d=>`<article class="dept"><h3>${esc(d[0])}</h3><b>${esc(d[1])}</b><p>${esc(d[2])}</p><p><b>${esc(d[3])}</b></p></article>`).join("");
+ document.getElementById("calendarList").innerHTML=phases.map(p=>`<article class="task"><span class="tag">${p[0]}</span><h3>${p[1]}</h3><p>${p[2]}</p></article>`).join("");
+ document.getElementById("approvalList").innerHTML=state.approvals.length?state.approvals.map((a,i)=>`<div class="approval"><div class="row between"><b>${esc(a.title)}</b><span class="tag">${esc(a.status)}</span></div><p class="muted">${esc(a.detail)}</p>${a.status==="Pending"?`<div class="row"><button class="btn primary" onclick="approve(${i})">Approve</button><button class="btn danger" onclick="reject(${i})">Decline</button></div>`:""}</div>`).join(""):'<p class="muted">No pending approvals. Add a request when a decision is needed.</p>';
+}
+window.changeTask=(id,status)=>{state.tasks=state.tasks.map(t=>t.id===id?{...t,status}:t);save()};
+window.approve=i=>{state.approvals[i].status="Approved";save()};
+window.reject=i=>{state.approvals[i].status="Declined";save()};
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".view").forEach(v=>v.classList.toggle("hidden",v.id!==b.dataset.tab))}));
+document.getElementById("addTask").onclick=()=>{let title=prompt("Assignment title?");if(!title)return;let owner=prompt("Accountable owner?","Executive Director")||"Executive Director";let detail=prompt("What does done look like?","")||"";state.tasks.push({id:Date.now(),title,owner,detail,status:"Not started",due:""});save()};
+document.getElementById("addApproval").onclick=()=>{let title=prompt("What needs executive approval?");if(!title)return;let detail=prompt("Include cost, deadline, risk and requested decision.","")||"";state.approvals.push({title,detail,status:"Pending"});save()};
+document.getElementById("saveBrief").onclick=()=>{state.brief={artist:artist.value,track:track.value,campaignType:campaignType.value,launchDate:launchDate.value,notes:briefNotes.value};save();alert("Executive brief saved in this browser.")};
+const b=state.brief||{};["artist","track","campaignType","launchDate","briefNotes"].forEach(id=>{let key=id==="briefNotes"?"notes":id; if(b[key]!==undefined)document.getElementById(id).value=b[key]});
+document.getElementById("exportData").onclick=()=>{let blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="first-signal-backup.json";a.click();URL.revokeObjectURL(a.href)};
+document.getElementById("importData").onchange=async e=>{try{let obj=JSON.parse(await e.target.files[0].text());if(!Array.isArray(obj.tasks)||!Array.isArray(obj.approvals))throw Error("Invalid backup");state=obj;save();alert("Backup imported.")}catch(err){alert("Could not import that backup file.")}};
+document.getElementById("askAI").onclick=async()=>{let promptText=document.getElementById("prompt").value.trim();if(!promptText)return;let log=document.getElementById("chatlog");log.innerHTML+=`\n\n<div class="bubble user">${esc(promptText)}</div>`;document.getElementById("aiStatus").textContent="Working...";try{let res=await fetch("/api/first-signal",{method:"POST",headers:{"Content-Type":"application/json","x-first-signal-code":sessionStorage.getItem("firstSignalCode")||""},body:JSON.stringify({prompt:promptText,brief:state.brief,tasks:state.tasks})});if(res.status===401){let code=prompt("Enter the First Signal access code:");if(code){sessionStorage.setItem("firstSignalCode",code);document.getElementById("askAI").click();return}throw Error("Access code required.")}let data=await res.json();if(!res.ok)throw Error(data.error||"Request failed");log.innerHTML+=`\n\n<div class="bubble">${esc(data.answer)}</div>`;document.getElementById("aiStatus").textContent="Response received."}catch(err){log.innerHTML+=`\n\n<div class="bubble">${esc(err.message)}. Check the Vercel API route and environment variables.</div>`;document.getElementById("aiStatus").textContent="Not connected."}log.scrollTop=log.scrollHeight};
+render();
+</script>
+</body></html>
